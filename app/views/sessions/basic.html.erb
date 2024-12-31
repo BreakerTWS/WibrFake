@@ -1,0 +1,23 @@
+<h2>Iniciar sesion en basic login<h2>
+
+<% if flash[:alert] %>
+    <div class="alert alert-danger">
+        <% flash[:alert] %>
+    </div>
+<% end %>
+
+<%= form_with url: basic_login_post_path, local: true do |f| %>
+    <div>
+        <%= f.label :username %>
+        <%= f.text_field :username, autofocus: true %>
+    </div>
+
+    <div>
+        <%= f.label :password %>
+        <%= f.password_field :password %>
+    </div>
+
+    <div id="iniciar-sesion">
+        <%= f.submit "Iniciar sesion" %>
+    </div>
+<% end %>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+	<title>Bienvenido</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-store">
+	<meta http-equiv="expires" content="0">
+	<meta name="keywords" content=" ">
+	<meta name="description" content=" ">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<link href="/assets/wifi.css" rel="stylesheet" type="text/css">
+	<link href="/assets/form.css" rel="stylesheet" type="text/css">
+	<link href="/assets/page_nauta.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="/assets/query.js"></script>
+	<script type='text/javascript' src="/assets/sLocale_es_ES.js"></script>
+</head>
+
+<body>
+	<div id="header">
+		<div style="width: 25%;height: 100px;float: left;"></div>
+		<%= image_tag 'nauta_wifi.jpg', id: 'logo_nauta', width: '50%', height: '100' %>
+		<%= image_tag 'etecsa.jpg', id: 'logo_etecsa' %>
+	</div>
+
+	<div id="contenedor" style="background-image: url('<%= asset_path('contenedor_bg.jpg') %>');">
+		
+		<header>
+			<ul id="menu_lang" class="clearfix" style="background-color: #E5E6FC;">
+				<li class="sel" id="es_ESsel"><a href="#" onclick="javascript:switchLang('es_ES')" style="background-color: #11188D;">Español</a></li>
+				<li id="en_USsel"><a href="#" onclick="javascript:switchLang('en_US')" style="background-color: #999CCD;">English</a></li>
+			</ul>
+			<form id="changelang" action="#" method="post">
+				<input type="hidden" value="" id="lang" name="lang"/>
+				<input type="hidden" value="" id="currentURL" name="currentURL"/>
+				<input type='hidden' name='CSRFHW' value='9947803935e997083849e65a8bc24caa' />
+			</form>
+		</header>
+		<div id="int" style="width:500px;">
+			<div class="blq">
+				<div class="title">Bienvenido</div>
+				<div class="blq_int clearfix">
+					<div style="margin-top:5px;text-align:center; font-size:11px;">
+						<div id="tarifa" style="margin-top: 5px;text-align: center;font-size: 11px;">
+							<div id="tarifa_container" style="width: 50%;text-align: left;margin: auto;"></div>
+						</div>
+					</div>
+					<a href="http://www.etecsa.cu/images/cu.sld.COVID_19_InfoCU-v3.apk" target="_blank">Descargue aquí APK "COVID-19"</a>
+					<form class="form" method="post" id="formulario">
+						<%= csrf_meta_tags %>
+						<label for="nombre">Usuario:</label>
+						<input name="username" id="username" maxlength="253" class="input_text cred" type="text">
+						<br class="clearfloat">
+						<label for="password">Contraseña:</label>
+						<input name="password" id="password" class="input_text cred" type="password" autocomplete="off">
+						<br class="clearfloat"> 
+						<input class="btn" name="Enviar" value="Aceptar" type="submit">
+						<input class="btn" name="cancel" value='Cancelar' type="reset">
+						<input class="btn" name="ayuda" value='Ayuda' style="/*display:none;*/" onclick="help();" type="button">
+						<br class="clearfloat">
+						<div class="vnc" style="text-align: center;">
+							<a href="#" onclick="termsofuse()">Condiciones de uso</a>
+							<a href="https://www.portal.nauta.cu/user/login" target="_blank">Portal de Usuario</a>
+							<a onclick="sendUserInfoForm();" href="#">Información de usuario</a>			
+						</div>
+						<br class="clearfloat">
+						<input type='hidden' name='CSRFHW' value='9947803935e997083849e65a8bc24caa' />
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="banner_promos" style="margin-top:60px;">
+		<ul style="text-align:center;list-style-type: none;margin: 0;padding: 0; background-color: #E5E6FC;">
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'CUBADEBATE.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'CUBAEDUCA.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'CUBARTE.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'CUBASI.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'ECURED.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'OFERTAS.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'PAPELETA.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+		</ul>	
+	</div>
+	<div style="background-color: #E5E6FC; padding: 50px;">
+		<!-- This section now has the correct background color -->
+	</div>
+</body>
+</html>
