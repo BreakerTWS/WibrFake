@@ -27,10 +27,6 @@ Wibrfake is an advanced cybersecurity tool developed for the creation of fake ac
 ![WibrFake Help](images/wibrfakehelp.png)
 
 ---
-# Version
-## CoBreak
-
-![CoBreak](https://img.shields.io/badge/CoBreak-1.0.5-blueviolet)
 
 # License
 
