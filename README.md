@@ -1,4 +1,4 @@
-# WirFake (Beta) No official
+# WirFake (Beta) Contains errors yet
 
 [`WibrFake.com`](https://github.com/BreakerTWS/WibrFake.git)
 
