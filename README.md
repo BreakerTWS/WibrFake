@@ -1,24 +1,38 @@
-# README
+# CoBreak
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+[`WibrFake.com`](https://github.com/BreakerTWS/WibrFake.git)
 
-Things you may want to cover:
+This script was made by [`Breaker`](https://github.com/BreakerTWS)
 
-* Ruby version
+Wibrfake is an advanced cybersecurity tool developed for the creation of fake access points with captive portals with the aim of exploring and understanding vulnerabilities of Wi-Fi networks.
 
-* System dependencies
+# GitHub Stats
 
-* Configuration
+![BreakerBox GitHub Stats](https://github-readme-stats.vercel.app/api?username=BreakerTWS&show_icons=true&theme=midnight-purple)
 
-* Database creation
+<h1> Installation</h1>
 
-* Database initialization
+<h3> Bundle</h3>
 
-* How to run the test suite
+> $ **bundle install**
 
-* Services (job queues, cache servers, search engines, etc.)
+<h2>Setup</h2>
 
-* Deployment instructions
+> $ **sudo ruby wibrfake --mode cli --interface [YOURINTERFACE]**
 
-* ...
+![WibrFake](images/wibrfakeinit.png)
+
+<h2>WibrFake Help</h2>
+
+![WibrFake Help](images/wibrfakehelp.png)
+
+---
+# Version
+## CoBreak
+
+![CoBreak](https://img.shields.io/badge/CoBreak-1.0.5-blueviolet)
+
+# License
+
+This project is licensed under the (GNU GENERAL PUBLIC LICENSE) - see the [LICENSE](LICENSE) file for details
+# CoBreak

@@ -14,9 +14,9 @@ Rails.application.routes.draw do
   root to: "sessions#index", as: :page_index
   get 'login/basic', to: 'sessions#basic', as: :basic_login
   post 'login/basic', to: 'sessions#basic_login', as: :basic_login_post
-  #get 'login/nauta', to: 'sessions#nauta', as: :nauta_login
-  get 'generate_204', to: 'sessions#nauta', as: :nauta_login
-  #post 'login/nauta', to: 'sessions#nauta_login', as: :nauta_login_post
-  post 'generate_204', to: 'sessions#nauta_login', as: :nauta_login_post
+  get 'login/nauta', to: 'sessions#nauta', as: :nauta_login
+  #get 'generate_204', to: 'sessions#nauta', as: :nauta_login
+  post 'login/nauta', to: 'sessions#nauta_login', as: :nauta_login_post
+  #post 'generate_204', to: 'sessions#nauta_login', as: :nauta_login_post
   #root to: 'sessions#basic', as: :basic_login
 end

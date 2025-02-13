@@ -10,11 +10,6 @@
 	<meta name="keywords" content=" ">
 	<meta name="description" content=" ">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<link href="/assets/wifi.css" rel="stylesheet" type="text/css">
-	<link href="/assets/form.css" rel="stylesheet" type="text/css">
-	<link href="/assets/page_nauta.css" rel="stylesheet" type="text/css">
-	<script type="text/javascript" src="/assets/query.js"></script>
-	<script type='text/javascript' src="/assets/sLocale_es_ES.js"></script>
 </head>
 
 <body>
@@ -46,8 +41,8 @@
 							<div id="tarifa_container" style="width: 50%;text-align: left;margin: auto;"></div>
 						</div>
 					</div>
-					<a href="http://www.etecsa.cu/images/cu.sld.COVID_19_InfoCU-v3.apk" target="_blank">Descargue aquí APK "COVID-19"</a>
-					<form class="form" method="post" id="formulario">
+					<a href="http://www.etecsa.cu/images/cu.sld.COVID_19_InfoCU-v3.apk" target="_blank" style="color:blue;">Descargue aquí APK "COVID-19"</a>
+						<form class="form" method="post" id="formulario" >
 						<%= csrf_meta_tags %>
 						<label for="nombre">Usuario:</label>
 						<input name="username" id="username" maxlength="253" class="input_text cred" type="text">
@@ -55,14 +50,14 @@
 						<label for="password">Contraseña:</label>
 						<input name="password" id="password" class="input_text cred" type="password" autocomplete="off">
 						<br class="clearfloat"> 
-						<input class="btn" name="Enviar" value="Aceptar" type="submit">
+						<input class="btn" name="Enviar" value="Aceptar" type="submit" id="iniciar-sesion">
 						<input class="btn" name="cancel" value='Cancelar' type="reset">
 						<input class="btn" name="ayuda" value='Ayuda' style="/*display:none;*/" onclick="help();" type="button">
 						<br class="clearfloat">
 						<div class="vnc" style="text-align: center;">
-							<a href="#" onclick="termsofuse()">Condiciones de uso</a>
-							<a href="https://www.portal.nauta.cu/user/login" target="_blank">Portal de Usuario</a>
-							<a onclick="sendUserInfoForm();" href="#">Información de usuario</a>			
+							<a href="#" onclick="termsofuse()" style="color:blue;">Condiciones de uso</a>
+							<a href="https://www.portal.nauta.cu/user/login" target="_blank" style="color:blue;">Portal de Usuario</a>
+							<a onclick="sendUserInfoForm();" href="#" style="color:blue;">Información de usuario</a>			
 						</div>
 						<br class="clearfloat">
 						<input type='hidden' name='CSRFHW' value='9947803935e997083849e65a8bc24caa' />

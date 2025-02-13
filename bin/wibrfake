@@ -1,0 +1,17 @@
+#!/bin/env ruby
+
+require 'ostruct'
+require 'optparse'
+require 'sequel'
+require 'socket'
+require 'open3'
+
+require_relative "#{File.join(File.dirname(__FILE__), '..', 'lib', 'wibrfake', 'run')}"
+options = OpenStruct.new
+
+begin
+    WibrFakeOPT::Runner.runner(options)
+rescue OptionParser::InvalidOption, OptionParser::InvalidArgument => error
+    puts error.message
+    exit(1)
+end

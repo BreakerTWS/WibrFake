@@ -1,0 +1,10 @@
+interface=wlo1
+driver=nl80211
+ssid=WibrFake Hacking
+hw_mode=g
+channel=6
+wpa=0
+auth_algs=1
+wmm_enabled=1
+ignore_broadcast_ssid=0
+macaddr_acl=0

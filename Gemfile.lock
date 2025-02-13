@@ -156,10 +156,13 @@ GEM
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     orm_adapter (0.5.0)
+    packetfu (1.1.13)
+      pcaprub
     parallel (1.26.3)
     parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
+    pcaprub (0.13.3)
     psych (5.2.2)
       date
       stringio
@@ -281,6 +284,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webrick (1.9.0)
     websocket (1.2.11)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
@@ -301,6 +305,7 @@ DEPENDENCIES
   error_highlight (>= 0.4.0)
   importmap-rails
   jbuilder
+  packetfu
   puma (>= 5.0)
   rails (~> 7.2.2, >= 7.2.2.1)
   rubocop-rails-omakase
@@ -311,6 +316,7 @@ DEPENDENCIES
   turbo-rails
   tzinfo-data
   web-console
+  webrick
 
 BUNDLED WITH
    2.3.15
