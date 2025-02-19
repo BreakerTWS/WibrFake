@@ -5,10 +5,10 @@ module WibrFake
                 require 'puma'
                 require_relative '../Rails/routes'
                 require_relative '../../../config/environment'
-            rescue LoadError => e
-                puts "Error al cargar una libreria"
+            #rescue LoadError => e
+            #    puts "Error al cargar una libreria"
                 exit(1)
-            end
+            #end
             @host = host
             @port = port
             @login = login
