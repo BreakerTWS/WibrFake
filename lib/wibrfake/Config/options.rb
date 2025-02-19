@@ -49,6 +49,9 @@ module WibrFake
                 puts e.message
                 exit(1)
             end
+            configAP.host_scan_arp = configAP.ipaddr
+            configAP.host_init_scan_arp = configAP.host_scan_arp.to_s
+            configAP.host_last_scan_arp = configAP.host_scan_arp.succ("254")
             configAP.name = "WibrFake Hacking"
             configAP.password = nil
             configAP.login = "basic"

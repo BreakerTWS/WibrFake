@@ -1,11 +1,17 @@
 module WibrFake
     class RailsLogin
         def self.validate?(login)
-            return show.include?(login)? true:false
+            ["basic", "wifietecsa"].each{|log_in|
+                if(log_in==login)
+                    return true
+                end
+            }
+            return false
         end
         
         def self.show(verb = 0)
-            String.new.puts_white(["basic", "wifietecsa"], verb)
+            return ["basic", "wifietecsa"] if verb==0
+            puts ["basic", "wifietecsa"]
         end
     end
 end

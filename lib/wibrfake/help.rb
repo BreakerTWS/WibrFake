@@ -16,6 +16,7 @@ module WibrFake
             comandos_show = {
                 "  apfake" => "Show access point options",
                 "  server" => "Show web server options",
+                "  process" => "Show runner process",
                 "  login" => "Show available logins",
             }
             comandos_apfake = {

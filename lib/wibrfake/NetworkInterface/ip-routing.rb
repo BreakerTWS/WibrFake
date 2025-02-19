@@ -8,6 +8,7 @@ module WibrFake
                 puts e.message
                 exit(1)
             end
+            @ipaddr = ipaddr
             @ip = ipaddr.to_s
             @ip_prefix = ipaddr.succ(0)
             @mask = ipaddr.mask
@@ -24,11 +25,14 @@ module WibrFake
             stdout_route_show, stderr_route_show, status_route_show = Open3.capture3("ip address show dev #{@iface}")
             if(status_route_show.success?)
                 stdout_route_show.split("\n").each{|route|
-                    if(route.include?("#{@ip}/#{@mask}")) and (route.include?(@iface))
-                        return route
-                    end
+                    route.scan(/\b(?:\d{1,3}\.){3}\d{1,3}\b/){|ip|
+                        if(/#{@ip.split('.')[0..2].join('.')}/ === ip) and (route.include?(@iface))
+                            return route
+                        end
+                    }
                 }
             end
+            return nil
         end
 
         def ruta_inspect

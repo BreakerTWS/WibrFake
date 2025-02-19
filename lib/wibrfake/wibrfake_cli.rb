@@ -8,15 +8,19 @@ module WibrFake
                 require_relative 'ty/apld'
                 require_relative 'String/string'
                 require_relative 'Rails/login'
+                require_relative 'Scanner/active-hosts'
                 require_relative 'NetworkInterface/monitor'
                 require_relative 'NetworkInterface/mac'
                 require_relative 'Listing/ouis'
                 require_relative 'Listing/apfake'
                 require_relative 'Listing/server'
+                require_relative 'Listing/arp_scan'
                 require_relative 'Config/options'
                 require_relative 'Config/ipaddr'
                 require_relative 'Config/security_wpa'
                 require_relative 'Process/pkill'
+                require_relative 'Listing/process'
+                require_relative 'Process/processes'
                 require_relative 'help'
             rescue LoadError => e
                 puts e.message
@@ -61,20 +65,24 @@ module WibrFake
         def start(options)
             validate_iface(options.iface)
             prompt = $prompt
+            options.server_web = Array.new
+            options.scan_arp = Array.new
             banner
-            prompt_color_valid = "\n\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  wlo1 \e[0m\033[38;5;236m\e[0m"
-            prompt_color_invalid = "\n\033[38;5;236m\e[0m\033[48;5;236m\033[38;5;196m✘ wibrfake  wlo1 \e[0m\033[38;5;196m\e[0m"
-            commands = %w[help clear banner monitor mac apfake set run pkill show exit]
+            prompt_color_valid = "\n\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{options.iface} \e[0m\033[38;5;236m\e[0m"
+            prompt_color_invalid = "\n\033[38;5;236m\e[0m\033[48;5;236m\033[38;5;196m✘ wibrfake  #{options.iface} \e[0m\033[38;5;196m\e[0m"
+            commands = %w[help clear banner monitor server arp_scan apfake mac apfake set run pkill show exit]
             loop do
                 input =  @prompt.ask(prompt_color_valid) {|get|
                     get.required true
                 }
-                break if input =~ /^exit.*/i
                 unless(input.empty?)
                     if(commands.include?(input.split.first))
                         #apfake_actived
                         prompt_color_valid = "\n\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  wlo1 \e[0m\033[38;5;236m\e[0m"
                         case input.split.first
+                        when 'exit'
+                            WibrFake::Pkill.kill_all()
+                            break
                         when 'help'
                             WibrFake::Help.help
                         when 'clear'
@@ -89,6 +97,20 @@ module WibrFake
                                     WibrFake::Listing.apfake_show(@configAP)
                                 when 'server'
                                     WibrFake::Listing.server_show(@configAP)
+                                when 'arp_scan'
+                                    WibrFake::Listing.arp_scan_show(@configAP)
+                                when 'process'
+                                    begin
+                                        WibrFake::Processes.status(input.split.fetch(2)).each{|process|
+                                            if(process.empty?)
+                                                warn "Process not found"
+                                            else
+                                                puts "#{input.split.fetch(2)}: #{process}"
+                                            end
+                                        }
+                                    rescue IndexError
+                                        puts WibrFake::Processes.status_all
+                                    end
                                 when 'login'
                                     WibrFake::RailsLogin.show(1)
                                 else
@@ -96,8 +118,11 @@ module WibrFake
                                     prompt_color_valid = prompt_color_invalid
                                 end
                             rescue IndexError
-                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command show [options]. not found, Run the show command for more details."
-                                prompt_color_valid = prompt_color_invalid
+                                #puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command show [options]. not found, Run the show command for more details."
+                                #prompt_color_valid = prompt_color_invalid
+                                WibrFake::Listing.show_process(options.iface)
+                            rescue Errno::ENOENT => e
+                                puts e.message
                             end
                         when'set'
                             begin
@@ -177,6 +202,7 @@ module WibrFake
                                 when 'gateway'
                                     begin
                                         @configAP.ipaddr = WibrFake::IPAddr.new(input.split.fetch(2))
+                                        @configAP.host_scan_arp = @configAP.ipaddr
                                     rescue IndexError
                                         puts "Falta el inet"
                                     rescue IPAddr::InvalidAddressError
@@ -206,6 +232,28 @@ module WibrFake
                                     rescue IndexError
                                         puts "Falta el server2"
                                     end
+                                when 'host'
+                                    begin
+                                        @configAP.host_scan_arp = WibrFake::IPAddr.new(input.split.fetch(2))
+                                        @configAP.host_init_scan_arp = @configAP.host_scan_arp.to_s
+                                        @configAP.host_last_scan_arp = @configAP.host_scan_arp.succ("254")
+                                    rescue IndexError
+                                        puts "Falta el host"
+                                    end
+                                when 'host_init'
+                                    begin
+                                        @configAP.host_init_scan_arp = input.split.fetch(2)
+                                        @configAP.host_scan_arp = WibrFake::IPAddr.new(WibrFake::IPAddr.init(input.split.fetch(2)))
+                                    rescue IndexError
+                                        puts "Falta el host inicial"
+                                    end
+                                when 'host_last'
+                                    begin
+                                        @configAP.host_last_scan_arp = input.split.fetch(2)
+                                        @configAP.host_scan_arp = WibrFake::IPAddr.new(WibrFake::IPAddr.init(input.split.fetch(2)))
+                                    rescue
+                                        puts "Falta el host final"
+                                    end
                                 else
                                     puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command set [#{input.split.fetch(1)}]. not found, Run the help command for more details."
                                     prompt_color_valid = prompt_color_invalid
@@ -214,16 +262,16 @@ module WibrFake
                                 puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command set [options]. not found, Run the show command for more details."
                                 prompt_color_valid = prompt_color_invalid
                             end
-                        when 'run'
-                            begin
-                                case input.split.fetch(1)
-                                when 'server'
-                                    WibrFake::Rails.new(@configAP.host_server, @configAP.port, @configAP.login, @configAP.login_route).start
-                                end
-                            rescue IndexError
-                                WibrFake::Config.new(@configAP, options.iface)
-                                WibrFake::Apld.new(options.iface, @configAP.ipaddr,@configAP.ipaddr.ip_range)
-                            end
+                        #when 'run'
+                        #    begin
+                        #        case input.split.fetch(1)
+                        #        when 'server'
+                        #            WibrFake::Rails.new(@configAP.host_server, @configAP.port, @configAP.login, @configAP.login_route).start
+                        #        end
+                        #    rescue IndexError
+                        #        WibrFake::Config.new(@configAP, options.iface)
+                        #        WibrFake::Apld.new(options.iface, @configAP.ipaddr,@configAP.ipaddr.ip_range)
+                        #    end
                         when 'pkill'
                             begin
                                 case input.split.fetch(1)
@@ -241,10 +289,20 @@ module WibrFake
                                     unless(WibrFake::Pkill.kill(input.split.fetch(1)))
                                         puts "#{input.split.fetch(1)} process not found running"
                                     end
+                                when 'server'
+                                    unless(WibrFake::Pkill.kill(input.split.fetch(1)))
+                                        puts "#{input.split.fetch(1)} process not found running"
+                                    end
+                                when 'arp_scan'
+                                    unless(WibrFake::Pkill.kill(input.split.fetch(1)))
+                                        puts "#{input.split.fetch(1)} process not found running"
+                                    end
                                 else
                                     puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command pkill [#{input.split.fetch(1)}]. not found, Run the help command for more details."
                                     prompt_color_valid = prompt_color_invalid
                                 end
+                            rescue Errno::ESRCH
+                                puts "proceso no encontrado"
                             rescue IndexError
                                 puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command pkill [options]. not found, Run the help command for more details."
                                 prompt_color_valid = prompt_color_invalid
@@ -264,6 +322,93 @@ module WibrFake
                                 end
                             rescue IndexError
                                 puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command monitor [options]. not found, Run the help command for more details."
+                                prompt_color_valid = prompt_color_invalid
+                            end
+                        when 'server'
+                            begin
+                                case input.split.fetch(1)
+                                when 'on'
+                                    options.server_web << WibrFake::Rails.new(@configAP.host_server, @configAP.port, @configAP.login, @configAP.login_route).start
+                                when 'off'
+                                    WibrFake::Pkill.kill_silence("server")
+                                    
+                                when 'status'
+                                    status = Array.new
+                                    if(!options.server_web.empty?)
+                                        options.server_web.each{|server_web|
+                                            WibrFake::RailsLogin.show(0).each{|login|
+                                                WibrFake::Processes.status("server").each{|server_pid|
+                                                    if(server_web.include?("#{server_pid}_#{login}"))
+                                                        status << "#{login}: #{server_web["#{server_pid}_#{login}"]}"
+                                                    end
+                                                }
+                                            }
+                                        }
+                                    end
+                                    if(status.empty?)
+                                        warn "\e[1;33m[\e[1;37mi\e[1;33m]\e[1;37m no tienes ningun servidor web corriendo"
+                                    else
+                                        puts "Running servers:"
+                                        puts
+                                        puts status
+                                        puts "\nTo see the identification processes for each server running, run \"show process server\""
+                                    end
+                                else
+                                    puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command server [#{input.split.fetch(1)}]. not found, Run the help command for more details."
+                                    prompt_color_valid = prompt_color_invalid
+                                end
+                            rescue IndexError
+                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command server [options]. not found, Run the help command for more details."
+                                prompt_color_valid = prompt_color_invalid
+                            end
+                        when 'arp_scan'
+                            begin
+                                case input.split.fetch(1)
+                                when 'on'
+                                    if(@configAP.host_init_scan_arp.nil?) and (@configAP.host_last_scan_arp.nil?)
+                                        WibrFake::Scanner.hosts(iface: options.iface, range: @configAP.host_scan_arp.range(@configAP.host_init_scan_arp, @configAP.host_last_scan_arp))
+                                    else
+                                        WibrFake::Scanner.hosts(iface: options.iface, ipaddr: @configAP.host_scan_arp)
+                                    end
+                                    options.scan_arp << [@configAP.host_scan_arp.to_s, @configAP.host_scan_arp.mask]
+                                when 'off'
+                                    WibrFake::Pkill.kill_silence("scan_arp")
+                                when 'status'
+                                    status = Array.new
+                                    WibrFake::Processes.status("arp_scan").each{|scan_pid|
+                                        status << scan_pid
+                                    }
+                                    if(status.empty?)
+                                        warn "\e[1;33m[\e[1;37mi\e[1;33m]\e[1;37m You don't have any host scanners by ARP running"
+                                    else
+                                        options.scan_arp.each_with_index{|scan, index|
+                                            puts "Scanner arp corriendo en #{scan[index]}"
+                                        }
+                                    end
+                                else
+                                    puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command arp_scan [#{input.split.fetch(1)}]. not found, Run the help command for more details."
+                                    prompt_color_valid = prompt_color_invalid
+                                end
+                            rescue IndexError
+                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command arp_scan [options]. not found, Run the help command for more details."
+                                prompt_color_valid = prompt_color_invalid
+                            end
+                        when 'apfake'
+                            begin
+                                case input.split.fetch(1)
+                                when 'on'
+                                    WibrFake::Config.new(@configAP, options.iface)
+                                    WibrFake::Apld.new(options.iface, @configAP.ipaddr)
+                                when 'off'
+                                    WibrFake::Pkill.kill_silence("apfake")
+                                when 'status'
+                                    
+                                else
+                                    puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command apfake [#{input.split.fetch(1)}]. not found, Run the help command for more details."
+                                    prompt_color_valid = prompt_color_invalid
+                                end
+                            rescue IndexError
+                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command apfake [options]. not found, Run the help command for more details."
                                 prompt_color_valid = prompt_color_invalid
                             end
                         when 'mac'

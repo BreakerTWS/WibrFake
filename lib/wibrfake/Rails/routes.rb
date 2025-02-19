@@ -11,6 +11,14 @@ module WibrFake
                     as_get: "basic_login",
                     as_post: "basic_login_post"
                 }
+            when 'wifietecsa'
+                routes << {
+                    route: route,
+                    sessions_get: "sessions#nauta",
+                    sessions_post: "sessions#nauta_login",
+                    as_get: "nauta_login",
+                    as_post: "nauta_login_post"
+                }
             end
         end
     end

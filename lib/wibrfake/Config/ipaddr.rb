@@ -1,6 +1,6 @@
 require 'ipaddr'
 require 'socket'
-
+require_relative '../Process/processes'
 module WibrFake
     class IPAddr < IPAddr
         def initialize(ip = "172.168.1.1", mask = "255.255.255.0")
@@ -44,6 +44,24 @@ module WibrFake
         end 
         def mask_number()
             mask = self.to_i.to_s(2).count("1").to_s
+        end
+        def self.range(ip_init, ip_last)
+            result = Array.new
+            init = ip_init.split('.')[3].to_i
+            last = ip_last.split('.')[3].to_i
+            body_init = ip_init.split('.')[0..2].join('.')
+            body_last = ip_last.split('.')[0..2].join('.')
+            if(init < last) and (body_init==body_last)
+                (init..last).each{|num|
+                    result << "#{body_init}.#{num}"
+                }
+            end
+            return result
+        end
+        def self.init(ip)
+            base = ip.split('.')
+            base[-1] = "1"
+            return base.join('.')
         end
     end
 end

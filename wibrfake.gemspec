@@ -1,4 +1,4 @@
-Gem::Specifications.new do |info|
+Gem::Specification.new do |info|
     info.name  = "wibrfake"
     info.version = "0.0.1"
     info.executables << "wibrfake"
@@ -6,7 +6,7 @@ Gem::Specifications.new do |info|
     info.add_development_dependency "bundler", "~> 2.3"
     info.add_development_dependency "sqlite3", '~> 1.4', '>= 1.4.0'
     info.add_runtime_dependency "sqlite3", '~> 1.4', '>= 1.4.0'
-    info.authors     = ["BreakerTW"]
+    info.authors     = ["BreakerTWS"]
     info.email       = 'breakingtws@gmail.com'
     info.summary     = "Best tool for hacking wifi"
 

@@ -17,23 +17,24 @@ module WibrFake
 
         def start
             begin
-                puma_server = Thread.new {
+                server_pid = fork {
                     route_root, route_login = WibrFake::Rails.routes(@login, @route)
                     ::Rails.application.routes.clear!
                     ::Rails.application.routes.draw {
                         devise_for :users
                         root to: route_root[:sessions_get], as: route_root[:as_get]
                         get route_login[:route], to: route_login[:sessions_get], as: route_login[:as_get]
-                        get route_login[:route], to: route_login[:sessions_post], as: route_login[:as_post]
+                        post route_login[:route], to: route_login[:sessions_post], as: route_login[:as_post]
                     }
                     Puma::Server.new(::Rails.application).tap {|server|
                         server.add_tcp_listener @host, @port
-                    }.run.join
+                    }.run
+                    sleep
                 }
+                WibrFake::Processes.set("server", server_pid)
             rescue
-            ensure
-                puts "Servidor lanzado correctamente"
             end
+            return {"#{server_pid}_#{@login}" => "http://#{@host}:#{@port}/#{@route}"}
         end
     end
 end
