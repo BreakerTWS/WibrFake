@@ -56,7 +56,7 @@ module WibrFake
         def set()
             stdout_set, stderr_set, status_set = Open3.capture3("ip addr add #{@ip}/#{@mask_number} dev #{@iface}")
             if(status_set.success?)
-                puts "New IPv4: #{@ip}/#{@mask} established"
+                puts "\e[1;32m[\e[1;37m+\e[1;32m]\e[1;37m New IPv4: #{@ip}/#{@mask} established"
                 unless(ruta_inspect.empty?)
                     puts "rute:"
                     puts ruta_inspect
@@ -68,15 +68,15 @@ module WibrFake
                 end
             else
                 if(stderr_set.include?("Address already assigned"))
-                    puts "Address already assigned IPv4 and Routing for interface #{@iface}"
-                    print "Do you want to continue or restart the IP?(y/n)"
+                    puts "\e[1;33m[\e[1;37m+\e[1;33m]\e[1;37m Address already assigned IPv4 and Routing for interface #{@iface}"
+                    print "Do you want to continue or restart the IP?(y/n): "
                     restart_ip = gets.chomp=="y"? true:false
                     if(restart_ip)
-                        puts "[!] Eliminating IPv4: #{@ip}/#{@mask}"
+                        puts "\e[1;33m[\e[1;37m!\e[1;33m]\e[1;37m Eliminating IPv4: #{@ip}/#{@mask}"
                         stdout_del_ip, stderr_del_ip, status_del_ip = Open3.capture3("ip addr del #{@ip}/#{@mask_number} dev #{@iface}")
                         if(status_del_ip.success?)
                             sleep(1)
-                            puts "Assigning new IPv4: #{@ip}/#{@mask}"
+                            puts "\e[1;32m[\e[1;37m+\e[1;32m]\e[1;37m Assigning new IPv4: #{@ip}/#{@mask}"
                             set
                         end
                     end
