@@ -23,12 +23,13 @@ Gem::Specification.new do |info|
     info.add_dependency 'bootsnap', '>= 0'
     info.add_dependency 'brakeman', '>= 0'
     info.add_dependency 'rubocop-rails-omakase', '>= 0'
-    info.add_dependency 'error_highlight', '>= 0'
+    info.add_dependency 'error_highlight', '>= 0.4.0'
     info.add_dependency 'capybara', '>= 0'
     info.add_dependency 'selenium-webdriver', '>= 0'
     info.add_dependency 'tty-cursor', '>= 0'
     info.add_dependency 'forwardable', '>= 0'
     info.add_dependency 'tty-screen', '>= 0'
+    info.add_dependency 'sequel', '>= 0'
   
     # Dependencias de desarrollo y prueba
     info.add_development_dependency 'debug', '>= 0'
