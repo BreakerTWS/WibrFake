@@ -1,5 +1,5 @@
 Gem::Specification.new do |info|
-    info.name  = "wibrfake"
+    info.name  = "wibrfake-brk"
     info.version = "0.0.2"
     info.executables << "wibrfake"
     info.description = "profesional tool for pentest wi-fi"
