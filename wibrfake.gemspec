@@ -16,6 +16,7 @@ Gem::Specification.new do |info|
     info.add_dependency 'stimulus-rails', '>= 0'
     info.add_dependency 'jbuilder', '>= 0'
     info.add_dependency 'tzinfo-data', '>= 0'
+    concurrent-ruby 'concurrent-ruby', '>= 0'
   
     # Dependencias de desarrollo y prueba
     info.add_development_dependency 'debug', '>= 0'
