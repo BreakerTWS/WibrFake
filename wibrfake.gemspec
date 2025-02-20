@@ -17,6 +17,18 @@ Gem::Specification.new do |info|
     info.add_dependency 'jbuilder', '>= 0'
     info.add_dependency 'tzinfo-data', '>= 0'
     info.add_dependency 'concurrent-ruby', '>= 0'
+    info.add_dependency 'web-console', '>= 0'
+    info.add_dependency 'tty-reader', '>= 0'
+    info.add_dependency 'pastel', '>= 0'
+    info.add_dependency 'bootsnap', '>= 0'
+    info.add_dependency 'brakeman', '>= 0'
+    info.add_dependency 'rubocop-rails-omakase', '>= 0'
+    info.add_dependency 'error_highlight', '>= 0'
+    info.add_dependency 'capybara', '>= 0'
+    info.add_dependency 'selenium-webdriver', '>= 0'
+    info.add_dependency 'tty-cursor', '>= 0'
+    info.add_dependency 'forwardable', '>= 0'
+    info.add_dependency 'tty-screen', '>= 0'
   
     # Dependencias de desarrollo y prueba
     info.add_development_dependency 'debug', '>= 0'
