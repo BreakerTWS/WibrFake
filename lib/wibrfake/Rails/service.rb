@@ -1,6 +1,6 @@
 module WibrFake
     class Rails
-        def initialize(host, port, login, route)
+        def initialize(host, port, login, route, credential_route, iface, id)
             begin
                 require 'puma'
                 require_relative '../Rails/routes'
@@ -14,19 +14,21 @@ module WibrFake
             @port = port
             @login = login
             @route = route
+            ENV['IFACE'] = iface
+            ENV['ID'] = id
+            ENV['CREDENTIAL_ROUTE'] = credential_route
         end
         def start
             begin
                 server_pid = fork {
                     route_root, route_login = WibrFake::Rails.routes(@login, @route)
                     ::Rails.application.routes.clear!
+                    
                     ::Rails.application.routes.draw {
-#=begin
                         devise_for :users
                         root to: route_root[:sessions_get], as: route_root[:as_get]
                         get route_login[:route], to: route_login[:sessions_get], as: route_login[:as_get]
                         post route_login[:route], to: route_login[:sessions_post], as: route_login[:as_post]
-#=end
                     }
                     Puma::Server.new(::Rails.application).tap {|server|
                         server.add_tcp_listener @host, @port
@@ -34,7 +36,8 @@ module WibrFake
                     sleep
                 }
                 WibrFake::Processes.set("server", server_pid)
-            rescue
+            rescue => e
+                puts e.message
             end
             return {"#{server_pid}_#{@login}" => "http://#{@host}:#{@port}/#{@route}"}
         end

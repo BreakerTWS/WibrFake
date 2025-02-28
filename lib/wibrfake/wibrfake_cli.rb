@@ -3,6 +3,7 @@ module WibrFake
     class CLI < String
         def initialize
             begin
+                require 'fileutils'
                 require_relative 'Rails/service'
                 require_relative 'ty/prompt'
                 require_relative 'ty/apld'
@@ -15,12 +16,14 @@ module WibrFake
                 require_relative 'Listing/apfake'
                 require_relative 'Listing/server'
                 require_relative 'Listing/arp_scan'
+                require_relative 'Listing/clients'
                 require_relative 'Config/options'
                 require_relative 'Config/ipaddr'
                 require_relative 'Config/security_wpa'
                 require_relative 'Process/pkill'
                 require_relative 'Listing/process'
                 require_relative 'Process/processes'
+                require_relative 'Process/id'
                 require_relative 'help'
             rescue LoadError => e
                 puts e.message
@@ -30,8 +33,9 @@ module WibrFake
             @configAP = OpenStruct.new
             @configAP = WibrFake::Config.apfake(@configAP)
             @configAP.ipaddr = WibrFake::IPAddr.new
+            
         end
-        def banner
+        def banner(id: nil)
             br_colorize """
              █     █░ ██▓ ▄▄▄▄    ██▀███    █████▒ ▄▄▄       ██ ▄█▀▓█████ 
             ▓█░ █ ░█░▓██▒▓█████▄ ▓██ ▒ ██▒▓██   ▒ ▒████▄     ██▄█▒ ▓█   ▀ 
@@ -43,7 +47,9 @@ module WibrFake
               ░   ░   ▒ ░ ░    ░   ░░   ░  ░ ░      ░   ▒   ░ ░░ ░    ░   
                 ░     ░   ░         ░                   ░  ░░  ░      ░  ░
                                ░ """
-            puts_red "\e[4m\t\t\t\tBy Breaker #{WibrFake.version}\n", 1
+            puts_red "\e[4m\t\t\t\tBy BreakerTWS #{WibrFake.version}\n", 1
+            puts "\n\033[38;5;196m[\e[1;37m+\033[38;5;196m]\e[1;37m session id: #{id}"
+
         end
 
         def validate_iface(iface)
@@ -61,40 +67,66 @@ module WibrFake
                 end
             end
         end
-
         def start(options)
             validate_iface(options.iface)
             prompt = $prompt
             options.server_web = Array.new
             options.scan_arp = Array.new
-            banner
+            uuid = WibrFake::UUID.session(options.iface)
+            banner(id: uuid)
+            session_dir = File.join(File.dirname(__FILE__), 'Tmp', uuid)
             prompt_color_valid = "\n\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{options.iface} \e[0m\033[38;5;236m\e[0m"
             prompt_color_invalid = "\n\033[38;5;236m\e[0m\033[48;5;236m\033[38;5;196m✘ wibrfake  #{options.iface} \e[0m\033[38;5;196m\e[0m"
-            commands = %w[help clear banner monitor server arp_scan apfake mac apfake set run pkill show exit]
-            loop do
-                input =  @prompt.ask(prompt_color_valid) {|get|
-                    get.required true
+            commands = %w[help clear banner monitor server arp_scan apfake clients mac apfake set run pkill show exit]
+            WibrFake::Config.new(@configAP, options.iface, uuid)
+            unless(options.file_wkdump.nil?)
+                dump = Array.new
+                puts "File wkdump loaded"
+                File.open(options.file_wkdump, 'r').each{|wkdump|
+                    dump << wkdump
                 }
-                unless(input.empty?)
+                inp = dump.each
+            end
+            loop do
+                unless(options.file_wkdump.nil?)
+                    begin
+                        input = inp.next
+                    rescue StopIteration
+                        options.file_wkdump = nil
+                    end
+                end
+                if(options.file_wkdump.nil?)
+                    input = @prompt.ask(prompt_color_valid) {|get|
+                        get.required true
+                    }
+                end
+                if(true)
                     if(commands.include?(input.split.first))
                         #apfake_actived
                         prompt_color_valid = "\n\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  wlo1 \e[0m\033[38;5;236m\e[0m"
                         case input.split.first
                         when 'exit'
                             WibrFake::Pkill.kill_all()
+                            if(Dir.exists?(session_dir))
+                                print "\n\033[38;5;196m[\e[1;37m+\033[38;5;196m]\e[1;37m Desea cerrar la sesion #{uuid}?(y/n): "
+                                session_controller = gets.chomp
+                                if(session_controller=='y') or (session_controller=='yes')
+                                    FileUtils.rm_rf(session_dir)
+                                end
+                            end
                             break
                         when 'help'
                             WibrFake::Help.help
                         when 'clear'
                             system('clear')
-                            banner
+                            banner(id: uuid)
                         when 'banner'
-                            banner
+                            banner(id: uuid)
                         when 'show'
                             begin
                                 case input.split.fetch(1)
                                 when 'apfake'
-                                    WibrFake::Listing.apfake_show(@configAP)
+                                    WibrFake::Listing.apfake_show(@configAP, options.iface)
                                 when 'server'
                                     WibrFake::Listing.server_show(@configAP)
                                 when 'arp_scan'
@@ -127,19 +159,47 @@ module WibrFake
                         when'set'
                             begin
                                 case input.split.fetch(1)
-                                when 'name'
+                                when 'iface'
                                     begin
-                                        @configAP.name = input.split.fetch(2)
+                                        options.iface = input.split.fetch(2)
+                                    rescue IndexError
+                                        puts "Falta el nombre de la interfaz de red"
+                                    end
+                                when 'ssid'
+                                    begin
+                                        @configAP.ssid = input.split[2..-1].join(" ")
                                     rescue IndexError
                                         puts "Falta el nombre del punto de acceso"
                                     end
                                 when 'password'
                                     begin
-                                        @configAP.password = input.split.fetch(2)
-                                        @configAP.required_pass = "yes"
-                                        @configAP.wpa = "wpa2"
+                                        if(@configAP.wpa.nil?)
+                                            puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command set password. not disponible, configure wpa authentication, use \"set wp [AUTHENTICATION]\""
+                                            prompt_color_valid = prompt_color_invalid
+                                        else
+                                            @configAP.password = input.split.fetch(2)
+                                            @configAP.wpa = "wpa2"
+                                        end
                                     rescue IndexError
                                         puts "Falta la contrasena del punto de acceso"
+                                    end
+                                when 'driver'
+                                    begin
+                                        @configAP.driver = input.split.fetch(2)
+                                    rescue IndexError
+                                        puts "Falta el nombre del driver de la red"
+                                    end
+                                when 'ignore_ssid'
+                                    begin
+                                        @configAP.ignore_ssid = input.split.fetch(2)
+                                    rescue IndexError
+                                        puts "Falta el la configuracion de ingore ssid"
+                                    end
+                                when 'hw_mode'
+                                    begin
+                                        @configAP.hw_mode = input.split.fetch(2)
+                                    rescue IndexError
+                                        puts "Falta el modo hw"
                                     end
                                 when 'login'
                                     begin
@@ -171,6 +231,8 @@ module WibrFake
                                             @configAP.wpa_key_mgmt = "WPA-PSK" if(input.split.fetch(2)=="wpa")
                                             @configAP.wpa_wep = @configAP.wpa=="wep"? "wep":nil
                                             @configAP.required_pass = "yes"
+                                        elsif(input.split.fetch(2)=="nil") or (input.split.fetch(2)=="none")
+                                            @configAP.wpa = nil
                                         else
                                             puts "Metodo de seguridad wpa no existe"
                                         end
@@ -208,11 +270,17 @@ module WibrFake
                                     rescue IPAddr::InvalidAddressError
                                         puts "Formato de ip erroneo"
                                     end
-                                when 'mask'
+                                when 'netmask'
                                     begin
                                         @configAP.ipaddr.defined_mask(input.split.fetch(2))
                                     rescue IndexError
                                         puts "Falta la mascara de red"
+                                    end
+                                when 'rekey'
+                                    begin
+                                        @configAP.wpa_rekey = input.split.fetch(2)
+                                    rescue IndexError
+                                        puts "Falta la configuracion de wpa rekey"
                                     end
                                 when 'channel'
                                     begin
@@ -220,17 +288,11 @@ module WibrFake
                                     rescue IndexError
                                         puts "Falta el canal"
                                     end
-                                when 'server'
+                                when 'wmm'
                                     begin
-                                        @configAP.server = input.split.fetch(2)
+                                        @configAP.wmm = input.split.fetch(2)
                                     rescue IndexError
-                                        puts "Falta el server"
-                                    end
-                                when 'server2'
-                                    begin
-                                        @configAP.server2 = input.split.fetch(2)
-                                    rescue IndexError
-                                        puts "Falta el server2"
+                                        puts "Falta el si habilita la virtualicacion o la desabilita"
                                     end
                                 when 'host'
                                     begin
@@ -253,6 +315,12 @@ module WibrFake
                                         @configAP.host_scan_arp = WibrFake::IPAddr.new(WibrFake::IPAddr.init(input.split.fetch(2)))
                                     rescue
                                         puts "Falta el host final"
+                                    end
+                                when 'credentials'
+                                    begin
+                                        @configAP.path_credential = input.split.fetch(2)
+                                    rescue
+                                        puts "Falta la ruta donde se va a guardar las credenciales"
                                     end
                                 else
                                     puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command set [#{input.split.fetch(1)}]. not found, Run the help command for more details."
@@ -277,7 +345,11 @@ module WibrFake
                                 case input.split.fetch(1)
                                 when 'all'
                                     WibrFake::Pkill.kill_all()
-                                when 'dnsmasq'
+                                when 'dns'
+                                    unless(WibrFake::Pkill.kill(input.split.fetch(1)))
+                                        puts "#{input.split.fetch(1)} process not found running"
+                                    end
+                                when 'dhcp'
                                     unless(WibrFake::Pkill.kill(input.split.fetch(1)))
                                         puts "#{input.split.fetch(1)} process not found running"
                                     end
@@ -328,7 +400,7 @@ module WibrFake
                             begin
                                 case input.split.fetch(1)
                                 when 'on'
-                                    options.server_web << WibrFake::Rails.new(@configAP.host_server, @configAP.port, @configAP.login, @configAP.login_route).start
+                                    options.server_web << WibrFake::Rails.new(@configAP.host_server, @configAP.port, @configAP.login, @configAP.login_route, @configAP.path_credential, options.iface, uuid).start
                                 when 'off'
                                     WibrFake::Pkill.kill_silence("server")
                                     
@@ -370,9 +442,9 @@ module WibrFake
                                     else
                                         WibrFake::Scanner.hosts(iface: options.iface, ipaddr: @configAP.host_scan_arp)
                                     end
-                                    options.scan_arp << [@configAP.host_scan_arp.to_s, @configAP.host_scan_arp.mask]
+                                    options.scan_arp << {host: @configAP.host_scan_arp.to_s, mask: @configAP.host_scan_arp.mask}
                                 when 'off'
-                                    WibrFake::Pkill.kill_silence("scan_arp")
+                                    WibrFake::Pkill.kill_silence("arp_scan")
                                 when 'status'
                                     status = Array.new
                                     WibrFake::Processes.status("arp_scan").each{|scan_pid|
@@ -380,9 +452,12 @@ module WibrFake
                                     }
                                     if(status.empty?)
                                         warn "\e[1;33m[\e[1;37mi\e[1;33m]\e[1;37m You don't have any host scanners by ARP running"
+                                        if(options.scan_arp.include?(host: @configAP.host_scan_arp.to_s))
+                                            options.scan_arp.delete(host: @configAP.host_scan_arp.to_s)
+                                        end
                                     else
-                                        options.scan_arp.each_with_index{|scan, index|
-                                            puts "Scanner arp corriendo en #{scan[index]}"
+                                        options.scan_arp.each{|scan|
+                                            puts "ARP scan running in #{scan[:host]}/#{scan[:mask]}"
                                         }
                                     end
                                 else
@@ -397,10 +472,12 @@ module WibrFake
                             begin
                                 case input.split.fetch(1)
                                 when 'on'
-                                    WibrFake::Config.new(@configAP, options.iface)
-                                    WibrFake::Apld.new(options.iface, @configAP.ipaddr)
+                                    WibrFake::Config.new(@configAP, options.iface, uuid)
+                                    WibrFake::Apld.new(options.iface, @configAP.ipaddr, uuid)
                                 when 'off'
-                                    WibrFake::Pkill.kill_silence("apfake")
+                                    WibrFake::Pkill.kill_silence("dns")
+                                    WibrFake::Pkill.kill_silence("dhcp")
+                                    WibrFake::Pkill.kill_silence("hostapd")
                                 when 'status'
                                     
                                 else
@@ -449,6 +526,19 @@ module WibrFake
                                 end
                             rescue IndexError
                                 puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command mac [options]. not found, Run the help command for more details."
+                                prompt_color_valid = prompt_color_invalid
+                            end
+                        when 'clients'
+                            begin
+                                case input.split.fetch(1)
+                                when 'activated'
+                                    WibrFake::Listing.clients_activated(id: uuid)
+                                else
+                                    puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command clients [#{input.split.fetch(1)}]. not found, Run the help command for more details."
+                                    prompt_color_valid = prompt_color_invalid
+                                end
+                            rescue IndexError
+                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command clients [options]. not found, Run the help command for more details."
                                 prompt_color_valid = prompt_color_invalid
                             end
                         end

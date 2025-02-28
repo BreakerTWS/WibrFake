@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE HTML>
 <html lang="es">
 <head>
@@ -10,6 +12,11 @@
 	<meta name="keywords" content=" ">
 	<meta name="description" content=" ">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<% content_for :stylesheet do %>
+		<%= stylesheet_link_tag 'page_nauta', media: 'all' %>
+	<% end %>
+	  
+	  <!-- Resto del HTML de la vista "nauta" -->
 </head>
 
 <body>
@@ -82,3 +89,4 @@
 	</div>
 </body>
 </html>
+

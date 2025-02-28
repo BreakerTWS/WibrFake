@@ -1,4 +1,16 @@
+
+
+
+
+
+
+
+
+
 /* CSS Document */
+* {
+	background-color: #FFFFFF;
+}
 body {
 	margin: 0;
 	background-color: #E5E6FC;
@@ -43,18 +55,18 @@ body {
 
 #contenedor {
 	position: relative;
-	/*background-color: #E5E6FC;*/
-	background-image: url(../images/contenedor_bg.jpg);
+	background-color: #E5E6FC;
+	/*background-image: url(../images/contenedor_bg.jpg);*/
 	background-repeat: no-repeat;
 	background-position: left top;
-	padding-top: 60px;
+	padding-top: 90px;
 }
 
 #contenedor #bg {
 	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: -1;
+	
 }
 
 ul#menu_lang {
@@ -87,10 +99,9 @@ ul#menu_lang {
 }
 
 #int {
-    max-width: 500px;
-    width: 90%;
-    margin: 0 auto;
-    z-index: 2;
+	width: 600px;
+	margin: 0 auto;
+	z-index: 2;
 }
 
 .blq {
@@ -170,7 +181,6 @@ a.red{
     color: red;
 }
 
-
 /* CSS Document */
 
 /* FORMULARIOS */
@@ -222,62 +232,12 @@ input.error,textarea.error,select.error {
 	color: #FFFFFF;
 	font-weight: bold;
 	border: 0;
+	cursor: pointer;
+	transform: translate(170px, -20%);
 }
 
 form input.cred {
-	width: 60%;
-
-    max-width: 250px;
-}
-
-/* Media queries para dispositivos móviles */
-
-@media (max-width: 480px) {
-
-    #int {
-
-        width: 85%;
-        padding: 0 10px;
-		margin: 0 auto;
-
-    }
-
-    
-
-    .form label {
-
-        display: block;
-
-        float: none;
-
-        text-align: left;
-
-        width: 70%;
-
-        margin-bottom: 5px;
-
-    }
-
-	form input.cred {
-		width: 100%;
-	
-		max-width: 340px;
-	}
-}
-@media (max-width: 418px) {
-	form input.cred {
-		width: 100%;
-	
-		max-width: 300px;
-	}
-}
-@media (max-width: 374px) {
-	form input.cred {
-		width: 100%;
-	
-		max-width: 280px;
-	}
-}
+	width: 250px;
 /* FIN FORMULARIOS */
 
 /* MESSAGES BOX*/
@@ -322,4 +282,8 @@ form input.cred {
 
 .info a.red{
     color: #00529B;
+}
+
+#banner_promos {
+    margin-top:40px;
 }

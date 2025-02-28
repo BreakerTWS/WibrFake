@@ -1,8 +1,13 @@
 source "https://rubygems.org"
 
+gem "devise"
+gem "tty-reader"
+gem "tty-cursor"
+gem "pastel"
 gem "packetfu"
 gem "webrick"
-gem "devise"
+#gem "devise"
+gem "nio4r", ">= 0"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.2", ">= 7.2.2.1"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]

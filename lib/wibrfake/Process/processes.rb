@@ -11,21 +11,7 @@ module WibrFake
                     }
                 end
             }
-=begin
-            Dir.entries('/proc').each do |entry|
-                next unless entry =~ /^\d+$/ # Solo directorios numéricos (PIDs)
-                comm_path = File.join('/proc', entry, 'comm')
-                begin
-                    cmdline = File.read(comm_path).strip
-                    if cmdline.include?(process_name)
-                        pids << entry.to_i
-                    end
-                    rescue Errno::ENOENT, Errno::EACCES
-                        next
-                    end
-                end
-            pids
-=end
+
             if(pids.empty?)
                 return "\033[38;5;196moff\e[1;37m" if(verb==1)
                 []
@@ -33,6 +19,23 @@ module WibrFake
                 return "\033[38;5;46mon\e[1;37m" if(verb==1)
                 return pids
             end
+        end
+        
+        def self.status_proc(process)
+            pids = Array.new
+            Dir.entries('/proc').each do |entry|
+                next unless entry =~ /^\d+$/ # Solo directorios numéricos (PIDs)
+                comm_path = File.join('/proc', entry, 'comm')
+                begin
+                    cmdline = File.read(comm_path).strip
+                    if cmdline.include?(process)
+                        pids << entry.to_i
+                    end
+                rescue Errno::ENOENT, Errno::EACCES
+                     next
+                end
+            end
+            return pids
         end
 
         def self.status_all

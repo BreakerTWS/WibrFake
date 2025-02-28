@@ -8,6 +8,7 @@ require 'open3'
 
 require_relative "#{File.join(File.dirname(__FILE__), '..', 'lib', 'wibrfake', 'run')}"
 options = OpenStruct.new
+options.file_wkdump = nil
 
 begin
     WibrFakeOPT::Runner.runner(options)

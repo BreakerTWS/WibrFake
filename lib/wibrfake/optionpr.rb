@@ -17,12 +17,22 @@ module WibrFake
                     param.separator ''
                     param.on('-m', '--mode MODE', String, 'mode to init program in gui or cli'){|mode|options.mode=mode}
                     param.on('-i', '--iface INTERFACE', String, 'Assign to Network Interface to operate'){|iface|options.iface=iface}
-                    param.on('-l', '--list TYPE', 'List the types of Wi-Fi network interfaces available'){|list|
-                        if(list=='interfaces')
-                             WibrFake::Listing.wireless
-                             exit 0
+                    param.on('-w', '--wkdump FILE', String, 'Map to wibrfake dump file'){|wkdump|options.file_wkdump=wkdump}
+                    param.on('-t', '--list-interfaces', 'List the types of Wi-Fi network interfaces available'){WibrFake::Listing.wireless; exit 0}
+                    param.on('-s', '--sessions', 'List the sessions actived'){
+                        sessions = Array.new
+                        Dir.each_child(File.join(File.dirname(__FILE__), 'Tmp')){|directory|
+                            if(Dir.exists?(File.join(File.dirname(__FILE__), 'Tmp', directory)))
+                                sessions << directory
+                            end
+                        }
+                        if(sessions.empty?)
+                            puts "Ninguna sesion de wibrfake esta activa"
                         else
-                            puts "Listaje no encontrado"
+                            puts "Sesiones activas:\n"
+                            sessions.each_with_index{|session, index|
+                            puts "\t#{index+1}: #{session}"
+                            }
                         end
                     }
                     param.separator ''

@@ -7,6 +7,7 @@ Gem::Specification.new do |info|
     # Dependencias
     info.add_dependency 'packetfu', '>= 0'
     info.add_dependency 'devise', '>= 0'
+    info.add_dependency 'nio4r', '>= 0'
     info.add_dependency 'rails', '~> 7.2.2', '>= 7.2.2.1'
     info.add_dependency 'sprockets-rails', '>= 0'
     info.add_dependency 'sqlite3', '>= 0'
@@ -42,6 +43,13 @@ Gem::Specification.new do |info|
     info.summary     = "Wibrfake is an advanced cybersecurity tool developed for the creation of fake access points"
     info.license     = "MIT"
     info.homepage    = 'https://github.com/BreakerTWS/WibrFake'
+    info.metadata = {
+        "rubygems_mfa_required" => "true",
+        "install_hooks" => "install_hooks.rb"
+    }
+    def info.post_install
+        require_relative 'install_hooks'
+    end
     info.files = `git ls-files -z`.split("\x0").reject do |f|
         f.match(/^.gitignore/)
     end

@@ -18,7 +18,7 @@ module WibrFake
             organization
         end
 
-        def self.show(iface)
+        def self.show(iface, verb = 1)
             stdout_mac, stderr_mac, status_mac = Open3.capture3("ip link show #{iface}")
             if(status_mac.success?)
                 macs = []
@@ -26,10 +26,14 @@ module WibrFake
                 current_mac, broadcast_mac, permanent_mac = macs
                 permanent_mac = permanent_mac || current_mac
                 organization_currentmac = veryfi_oui(current_mac)
-                puts "\nCurrent Mac: " + current_mac
-                puts "Organization of current mac: #{organization_currentmac}"
-                puts "Broadcast Mac: " + broadcast_mac
-                puts "Permanent Mac: " + permanent_mac
+                if(verb==1)
+                    puts "\nCurrent Mac: " + current_mac
+                    puts "Organization of current mac: #{organization_currentmac}"
+                    puts "Broadcast Mac: " + broadcast_mac
+                    puts "Permanent Mac: " + permanent_mac
+                else
+                    return current_mac
+                end
             end
         end
 

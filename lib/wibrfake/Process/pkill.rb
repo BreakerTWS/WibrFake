@@ -4,15 +4,6 @@ module WibrFake
         def self.kill(process_name)
             status = false
             pids = WibrFake::Processes.status(process_name)
-=begin
-            other_pids = []
-            if(process_name=="dnsmasq") or (process_name=="hostapd")
-                pids.each{|pid|
-                    puts other_pids << pid.to_i + 1
-                }
-            end
-            pids = other_pids if(!other_pids.empty?)
-=end
             if(pids.length>1)
                 pids.each{|pid|
                     puts "Process #{process_name} with PID #{pid} found"
@@ -56,7 +47,7 @@ module WibrFake
         end
 
         def self.kill_all()
-            processes_name = %w[hostapd dnsmasq wpa_supplicant server arp_scan]
+            processes_name = %w[hostapd wpa_supplicant server arp_scan dns dhcp]
             processes_name.each{|process_name|
                 pids = WibrFake::Processes.status(process_name)
                 if(pids.length>1)

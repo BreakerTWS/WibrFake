@@ -1,12 +1,10 @@
 <h2>Iniciar sesion en basic login<h2>
-
-<% if flash[:alert] %>
-    <div class="alert alert-danger">
-        <% flash[:alert] %>
-    </div>
+<% content_for :stylesheet do %>
+    <%= stylesheet_link_tag 'page_basic' %>
 <% end %>
-
-<%= form_with url: basic_login_post_path, local: true do |f| %>
+  
+  <!-- Resto del HTML de la vista "basic" -->
+<%= form_with url: basic_login_path, local: true do |f| %>
     <div>
         <%= f.label :username %>
         <%= f.text_field :username, autofocus: true %>

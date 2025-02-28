@@ -13,14 +13,22 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= yield %>
-    <%= javascript_include_tag 'page_basic' %>
-    <%= stylesheet_link_tag 'page_basic' %>
-    <%= stylesheet_link_tag 'page_nauta' %>
+  
+  <% if content_for?(:stylesheet) %>
+  <%= yield :stylesheet %>
+  
+<% else %>
+  <%= stylesheet_link_tag 'default' %> <!-- CSS para otras páginas -->
+<% end %>
+<% if content_for?(:javascript) %>
+  <%= yield :javascript %>
+  
+<% end %>
+<%= yield %>
+
   </body>
 </html>

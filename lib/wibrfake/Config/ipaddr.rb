@@ -45,6 +45,10 @@ module WibrFake
         def mask_number()
             mask = self.to_i.to_s(2).count("1").to_s
         end
+        def vac()
+            vacio = self.to_s.strip.split('.')[0..2].join('.')
+            vacio + "."
+        end
         def self.range(ip_init, ip_last)
             result = Array.new
             init = ip_init.split('.')[3].to_i

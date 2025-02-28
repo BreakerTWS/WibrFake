@@ -21,8 +21,7 @@ module WibrFake
             }
             comandos_apfake = {
                 "  set" => "Map data",
-                "  run" => "Run Access Point",
-                "     └ server" => "Run server"
+                "  clients" => "Clientes conectados"
             }
 
             comandos_monitor = {
