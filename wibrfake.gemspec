@@ -3,7 +3,7 @@ Gem::Specification.new do |info|
     info.version = "0.0.2"
     info.executables << "wibrfake"
     info.description = "profesional tool for pentest wi-fi"
-    info.extensions << "ext/wibrfake/extconf.rb"
+    info.extensions = %w[ext/wibrfake/extconf.rb]
     
     # Dependencias
     info.add_dependency 'packetfu', '>= 0'
