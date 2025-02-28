@@ -3,7 +3,6 @@ Gem::Specification.new do |info|
     info.version = "0.0.2"
     info.executables << "wibrfake"
     info.description = "profesional tool for pentest wi-fi"
-    info.extensions = %w[ext/wibrfake/extconf.rb]
     info.files = `git ls-files -z`.split("\x0").reject do |f|
         f.match(/^.gitignore/)
     end
