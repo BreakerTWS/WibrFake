@@ -5,6 +5,7 @@ require 'optparse'
 require 'sequel'
 require 'socket'
 require 'open3'
+require 'fileutils'
 
 require_relative "#{File.join(File.dirname(__FILE__), '..', 'lib', 'wibrfake', 'run')}"
 options = OpenStruct.new

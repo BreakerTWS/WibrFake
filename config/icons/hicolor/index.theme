@@ -1,0 +1,20 @@
+[Icon Theme]
+Name=WibrFake
+Comment=Custom icon theme for wkdump files
+Inherits=Adwaita
+Directories=16x16/mimetypes,32x32/mimetypes,48x48/mimetypes
+
+[16x16/mimetypes]
+Size=16
+Type=Fixed
+Scale=1
+
+[32x32/mimetypes]
+Size=32
+Type=Fixed
+Scale=1
+
+[48x48/mimetypes]
+Size=48
+Type=Fixed
+Scale=1

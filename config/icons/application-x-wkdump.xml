@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-wkdump">
+    <comment>wkdump file</comment>
+    <icon name="application-x-wkdump"/>
+    <glob pattern="*.wkdump"/>
+    <!-- ¡Esto cambia todo! -->
+    <generic-icon name="application-x-wkdump"/>
+    <magic priority="80">
+      <match type="string" value="WKDUMP" offset="0"/>
+    </magic>
+  </mime-type>
+</mime-info>

@@ -96,13 +96,13 @@ class String
         spin = %w[\\ | / -]
         count = 0
         while true
-            if count <= 20
+            if count <= 40
                 spin.each {|line|
                     print " #{input} [#{line}]\r"
                     sleep(0.13)
                     count += 1
                 }
-                break if count >= 19
+                break if count >= 39
             end
         end
     end
