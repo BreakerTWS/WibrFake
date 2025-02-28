@@ -3,6 +3,7 @@ Gem::Specification.new do |info|
     info.version = "0.0.2"
     info.executables << "wibrfake"
     info.description = "profesional tool for pentest wi-fi"
+    info.extensions << "ext/wibrfake/extconf.rb"
     
     # Dependencias
     info.add_dependency 'packetfu', '>= 0'
@@ -43,13 +44,6 @@ Gem::Specification.new do |info|
     info.summary     = "Wibrfake is an advanced cybersecurity tool developed for the creation of fake access points"
     info.license     = "MIT"
     info.homepage    = 'https://github.com/BreakerTWS/WibrFake'
-    info.metadata = {
-        "rubygems_mfa_required" => "true",
-        "install_hooks" => "install_hooks.rb"
-    }
-    def info.post_install
-        require_relative 'install_hooks'
-    end
     info.files = `git ls-files -z`.split("\x0").reject do |f|
         f.match(/^.gitignore/)
     end
