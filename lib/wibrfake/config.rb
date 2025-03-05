@@ -17,5 +17,8 @@ mimedb = Open3.capture3("gtk-update-icon-cache -f #{File.expand_path("~/.local/s
 
 animation.join
 puts "configuration terminated, execute \"wibrfake --help\" for more information"
-FileUtils.rm(File.join(File.dirname(__FILE__), 'config.rb'))
-FileUtils.touch(File.join(File.dirname(__FILE__), 'config.rb'))
+begin
+    FileUtils.rm(File.join(File.dirname(__FILE__), 'config.rb'))
+    FileUtils.touch(File.join(File.dirname(__FILE__), 'config.rb'))
+rescue Errno::EACCES
+end
