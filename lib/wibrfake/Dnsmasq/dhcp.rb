@@ -80,7 +80,7 @@ module DHCP
                     lease = leases[mac]
                     if lease
                         # Actualizar hostname si viene en el Request
-                        lease[:hostname] = hostname unless hostname == 'Desconocido'
+                        lease[:hostname] = hostname unless hostname == 'unknow'
                         
                         # Construir DHCP Ack
                         dhcp_options = [
@@ -121,9 +121,22 @@ module DHCP
                         puts "\n\r\033[38;5;46m[\e[1;37m+\033[38;5;46m]\e[1;37m" ' ' + "Dispositive: \033[38;5;51m#{lease[:hostname]}\e[1;37m | " + "IP: \033[38;5;118m#{client_ip}\e[1;37m | " + "MAC: \033[38;5;214m#{mac}\e[1;37m" + ' ' + 'connected'
                         puts "\n"
                         print "\r\033[38;5;236m\e[0m\033[48;5;236m " + "\033[38;5;196mwibrfake  #{@iface} \e[0m" + "\033[38;5;236m\e[0m "
-                        
-                        File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients_activated.txt'), 'a'){|file|
+                        File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients.log'), 'a'){|file|
+                            file.write "#{Time.now}, Hostname: #{lease[:hostname]}, IP: #{client_ip}, Mac: #{mac}, connect\n"
+                        }
+                        File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients_connected.log'), 'a'){|file|
                             file.write "#{lease[:hostname]}, #{client_ip}, #{mac}\n"
+                            if(File.exists?(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients_disconnected.log')))
+                                File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients_disconnected.log'), 'r+'){|log|
+                                    lines = log.readlines
+                                    if lines.any? {|lin| lin.include?(mac)}
+                                        lines.reject! { |linefile| linefile.include?(mac) }
+                                    end
+                                    log.rewind
+                                    log.write(lines.join)
+                                    log.truncate(log.pos)
+                                }
+                            end
                         }
                     end
                 end

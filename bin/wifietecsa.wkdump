@@ -4,5 +4,3 @@ set login wifietecsa
 set route generate_204
 set port 80
 set credentials credentials.txt
-server on
-server status

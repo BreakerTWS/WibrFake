@@ -16,7 +16,6 @@ mimedb = Open3.capture3("update-mime-database #{File.expand_path("~/.local/share
 mimedb = Open3.capture3("gtk-update-icon-cache -f #{File.expand_path("~/.local/share/icons/hicolor/")}")
 
 animation.join
-puts "configuration terminated, execute \"sudo wibrfake --help\" for more information"
-exit(0)
-#FileUtils.rm(File.join(File.dirname(__FILE__), 'config.rb'))
-#FileUtils.touch(File.join(File.dirname(__FILE__), 'config.rb'))
+puts "configuration terminated, execute \"wibrfake --help\" for more information"
+FileUtils.rm(File.join(File.dirname(__FILE__), 'config.rb'))
+FileUtils.touch(File.join(File.dirname(__FILE__), 'config.rb'))

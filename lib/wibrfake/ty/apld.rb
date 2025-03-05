@@ -64,11 +64,17 @@ module WibrFake
                 print "\r\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{@iface} \e[0m\033[38;5;236m\e[0m "
                 break
               elsif line =~ /DISCONNECTED/
-                File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients_activated.txt'), 'r+') do |file|
+                File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients_connected.log'), 'r+') do |file|
                   lines = file.readlines
                   target = line.split.last
                   lines.each{|client|
                     if client.include?(target)
+                      File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients.log'), 'a'){|log|
+                            log.write "#{Time.now}, Hostname: #{client.split(', ')[0]}, IP: #{client.split(', ')[1]}, Mac: #{client.split(', ')[2].chomp}, disconnect\n"
+                      }
+                      File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients_disconnected.log'), 'a'){|log|
+                            log.write "#{client.split(', ')[0]}, #{client.split(', ')[1]}, #{client.split(', ')[2].chomp}\n"
+                      }
                       warn "\n\r\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m" + ' ' + "Dispositive: \033[38;5;51m#{client.split(', ')[0]}\e[1;37m | " + "IP: \033[38;5;118m#{client.split(', ')[1]}\e[1;37m | " + "MAC: \033[38;5;214m#{client.split(', ')[2].chomp}\e[1;37m" + ' ' + "disconnected"
                       puts "\n"
                       print "\r\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{@iface} \e[0m\033[38;5;236m\e[0m "
@@ -81,10 +87,11 @@ module WibrFake
                 end
                 
               elsif(line=~/already configured/)
-                warn "\e[1;33m[\e[1;37m!\e[1;33m]\e[1;37m hostapd process is already being used. Kill the process with the `pkill hostapd` command"
+                warn "\n\r\e[1;33m[\e[1;37m!\e[1;33m]\e[1;37m hostapd process is already being used. Kill the process with the `pkill hostapd` command"
+                puts "\n"
+                print "\r\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{@iface} \e[0m\033[38;5;236m\e[0m "
                 break
               end
-              
             }
           rescue
           end 

@@ -4,6 +4,7 @@ module WibrFake
         def initialize
             begin
                 require 'fileutils'
+                require 'yaml'
                 require_relative 'Rails/service'
                 require_relative 'ty/prompt'
                 require_relative 'ty/apld'
@@ -17,6 +18,7 @@ module WibrFake
                 require_relative 'Listing/server'
                 require_relative 'Listing/arp_scan'
                 require_relative 'Listing/clients'
+                require_relative 'Listing/sessions'
                 require_relative 'Config/options'
                 require_relative 'Config/ipaddr'
                 require_relative 'Config/security_wpa'
@@ -24,6 +26,7 @@ module WibrFake
                 require_relative 'Listing/process'
                 require_relative 'Process/processes'
                 require_relative 'Process/id'
+                require_relative 'Sessions/session'
                 require_relative 'help'
             rescue LoadError => e
                 puts e.message
@@ -72,13 +75,15 @@ module WibrFake
             prompt = $prompt
             options.server_web = Array.new
             options.scan_arp = Array.new
-            uuid = WibrFake::UUID.session(options.iface)
-            banner(id: uuid)
-            session_dir = File.join(File.dirname(__FILE__), 'Tmp', uuid)
+            options.uuid = WibrFake::UUID.session(options.iface)
+            options.iface_init = options.iface
+            options.uuid_init = options.uuid
+            options.session = WibrFake::Session.new(id: options.uuid)
+            banner(id: options.uuid)
             prompt_color_valid = "\n\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{options.iface} \e[0m\033[38;5;236m\e[0m"
             prompt_color_invalid = "\n\033[38;5;236m\e[0m\033[48;5;236m\033[38;5;196m✘ wibrfake  #{options.iface} \e[0m\033[38;5;196m\e[0m"
-            commands = %w[help clear banner monitor server arp_scan apfake clients mac apfake set run pkill show exit]
-            WibrFake::Config.new(@configAP, options.iface, uuid)
+            commands = %w[help clear banner monitor server arp_scan apfake clients session mac apfake set run pkill show exit]
+            WibrFake::Config.new(@configAP, options.iface, options.uuid)
             unless(options.file_wkdump.nil?)
                 dump = Array.new
                 puts "File wkdump loaded"
@@ -107,21 +112,20 @@ module WibrFake
                         case input.split.first
                         when 'exit'
                             WibrFake::Pkill.kill_all()
-                            if(Dir.exists?(session_dir))
-                                print "\n\033[38;5;196m[\e[1;37m+\033[38;5;196m]\e[1;37m Desea cerrar la sesion #{uuid}?(y/n): "
-                                session_controller = gets.chomp
-                                if(session_controller=='y') or (session_controller=='yes')
-                                    FileUtils.rm_rf(session_dir)
+                            WibrFake::Listing.sessions_list_return.each{|session|
+                                config_yml = YAML.load_file(File.join(File.dirname(__FILE__), 'Tmp', session, 'config.yml'))
+                                if(!(config_yml['session']['session_save']))
+                                    FileUtils.rm_rf(File.join(File.dirname(__FILE__), 'Tmp', session))
                                 end
-                            end
+                            }
                             break
                         when 'help'
                             WibrFake::Help.help
                         when 'clear'
                             system('clear')
-                            banner(id: uuid)
+                            banner(id: options.uuid)
                         when 'banner'
-                            banner(id: uuid)
+                            banner(id: options.uuid)
                         when 'show'
                             begin
                                 case input.split.fetch(1)
@@ -400,7 +404,7 @@ module WibrFake
                             begin
                                 case input.split.fetch(1)
                                 when 'on'
-                                    options.server_web << WibrFake::Rails.new(@configAP.host_server, @configAP.port, @configAP.login, @configAP.login_route, @configAP.path_credential, options.iface, uuid).start
+                                    options.server_web << WibrFake::Rails.new(@configAP.host_server, @configAP.port, @configAP.login, @configAP.login_route, @configAP.path_credential, options.iface, options.uuid).start
                                 when 'off'
                                     WibrFake::Pkill.kill_silence("server")
                                     
@@ -472,8 +476,8 @@ module WibrFake
                             begin
                                 case input.split.fetch(1)
                                 when 'on'
-                                    WibrFake::Config.new(@configAP, options.iface, uuid)
-                                    WibrFake::Apld.new(options.iface, @configAP.ipaddr, uuid)
+                                    WibrFake::Config.new(@configAP, options.iface, options.uuid)
+                                    WibrFake::Apld.new(options.iface, @configAP.ipaddr, options.uuid)
                                 when 'off'
                                     WibrFake::Pkill.kill_silence("dns")
                                     WibrFake::Pkill.kill_silence("dhcp")
@@ -531,14 +535,83 @@ module WibrFake
                         when 'clients'
                             begin
                                 case input.split.fetch(1)
-                                when 'activated'
-                                    WibrFake::Listing.clients_activated(id: uuid)
+                                when 'connected'
+                                    WibrFake::Listing.clients_connected(id: options.uuid)
+                                when 'disconnected'
+                                    WibrFake::Listing.clients_disconnected(id: options.uuid)
+                                when 'logs'
+                                    WibrFake::Listing.clients_logs(id: options.uuid)
                                 else
                                     puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command clients [#{input.split.fetch(1)}]. not found, Run the help command for more details."
                                     prompt_color_valid = prompt_color_invalid
                                 end
                             rescue IndexError
                                 puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command clients [options]. not found, Run the help command for more details."
+                                prompt_color_valid = prompt_color_invalid
+                            end
+                        when 'session'
+                            begin
+                                case input.split.fetch(1)
+                                when 'list'
+                                    WibrFake::Listing.sessions_list(id: options.uuid)
+                                when 'new'
+                                    begin
+                                        if(input.split.fetch(2))
+                                            WibrFake::Session.new(id: input.split.fetch(2))
+                                            WibrFake::Config.new(WibrFake::Config.apfake(OpenStruct.new), options.iface_init, input.split.fetch(2))
+                                            puts "[+] Nueva sesion creada: #{input.split.fetch(2)}"
+                                        end
+                                    rescue IndexError
+                                        warn "No ha definido el nombre para la nueva sesion"
+                                    end
+                                when 'remove'
+                                    begin
+                                        if(input.split.fetch(2))
+                                            options.session.remove(number: input.split.fetch(2))
+                                        end
+                                    rescue IndexError
+                                        puts "No ha definido que sesion desea borrar"
+                                    end
+                                when 'rename'
+                                    begin
+                                        if(input.split.fetch(2))
+                                            begin
+                                                if(input.split.fetch(3))
+                                                    if(options.session.rename(number: input.split.fetch(2), name: input.split.fetch(3), id: options.uuid)=='current')
+                                                        options.uuid = input.split.fetch(3)
+                                                    end
+                                                end
+                                            rescue IndexError
+                                                warn "No ha definido un nombre para la sesion"
+                                            end
+                                        end
+                                    rescue IndexError
+                                        warn "No se ha definido a que sesion renombrar"
+                                    end
+                                when 'save'
+                                    WibrFake::Config.new(@configAP, options.iface, options.uuid)
+                                    options.session.save(id: options.uuid)
+                                    @configAP.session_remove = false
+                                when 'init'
+                                    begin
+                                        if(input.split.fetch(2))
+                                            options.uuid = options.session.init(number: input.split.fetch(2))
+                                            options.file_wkdump = File.join(File.dirname(__FILE__), 'Tmp', options.uuid, 'wkdump', "#{options.uuid}.wkdump")
+                                            dump = Array.new
+                                            File.open(options.file_wkdump, 'r').each{|wkdump|
+                                                dump << wkdump
+                                            }
+                                            inp = dump.each
+                                        end
+                                    rescue IndexError
+                                        warn "No se ha definido la sesion a iniciar"
+                                    end
+                                else
+                                    puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command session [#{input.split.fetch(1)}]. not found, Run the help command for more details."
+                                    prompt_color_valid = prompt_color_invalid
+                                end
+                            rescue IndexError
+                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command session [options]. not found, Run the help command for more details."
                                 prompt_color_valid = prompt_color_invalid
                             end
                         end
