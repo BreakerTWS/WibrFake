@@ -83,7 +83,8 @@ module WibrFake
                 puts
             else
                 config_session = {
-                    'WibrFake' => {
+                    'WibrFake' => 'Config',
+                    'session' => {
                         'session_save' => true,
                         'session_modified' => false,
                     }
