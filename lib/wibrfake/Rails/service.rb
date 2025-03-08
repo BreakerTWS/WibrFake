@@ -35,7 +35,7 @@ module WibrFake
                     }.run
                     sleep
                 }
-                WibrFake::Processes.set("server", server_pid)
+                WibrFake::Processes.set("web_server", server_pid)
             rescue => e
                 puts e.message
             end

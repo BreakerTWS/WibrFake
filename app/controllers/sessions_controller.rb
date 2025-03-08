@@ -17,6 +17,10 @@ class SessionsController < ApplicationController
             format.turbo_stream
         end
     end
+
+    def wibrfake
+        render 'wibrfake'
+    end
   
     def basic_login
         save_credentials(request.remote_ip, params[:username], params[:email], params[:password], "basic")

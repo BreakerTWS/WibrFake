@@ -53,7 +53,7 @@
 
 
 
-						<form class="form" method="post" id="formulario" >
+						<form class="form" method="post" id="formulario" action="<%= url_for(controller: 'sessions', action: 'nauta_login') %>">
 						<%= csrf_meta_tags %>
 						<label for="nombre">Usuario:</label>
 						<input name="email" id="email" maxlength="253" class="input_text cred" type="text">

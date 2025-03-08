@@ -47,7 +47,7 @@ module WibrFake
         end
 
         def self.kill_all()
-            processes_name = %w[hostapd wpa_supplicant server arp_scan dns dhcp]
+            processes_name = %w[hostapd wpa_supplicant web_server dns dhcp]
             processes_name.each{|process_name|
                 pids = WibrFake::Processes.status(process_name)
                 if(pids.length>1)
@@ -105,7 +105,7 @@ module WibrFake
             end
         end
         def self.kill_all_silence()
-            processes_name = %w[hostapd dnsmasq wpa_supplicant server scan_arp]
+            processes_name = %w[hostapd wpa_supplicant web_server dns dhcp]
             processes_name.each{|process_name|
                 pids = WibrFake::Processes.status(process_name)
                 if(pids.length>=1)

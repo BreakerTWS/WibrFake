@@ -1,0 +1,36 @@
+body {
+    background-color: #121212; /* Fondo oscuro */
+    color: #f5f5f5; /* Texto claro */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #8B0000; /* Rojo oscuro */
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+main {
+    padding: 20px;
+}
+
+h2 {
+    color: #8B0000; /* Rojo oscuro para los subtítulos */
+}
+
+footer {
+    background-color: #8B0000; /* Rojo oscuro */
+    color: #f5f5f5; /* Texto claro */
+    text-align: center;
+    padding: 10px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}

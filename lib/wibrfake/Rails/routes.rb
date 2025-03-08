@@ -1,9 +1,9 @@
 module WibrFake
     class Rails
         def self.routes(login, route)
-            routes = [{sessions_get: "sessions#index", as_get: :page_index}]
             case login
             when 'basic'
+                routes = [{sessions_get: "sessions#basic", as_get: :page_index}]
                 routes << {
                     route: route,
                     sessions_get: "sessions#basic",
@@ -12,6 +12,7 @@ module WibrFake
                     as_post: "basic_login_post"
                 }
             when 'wifietecsa'
+                routes = [{sessions_get: "sessions#nauta", as_get: :page_index}]
                 routes << {
                     route: route,
                     sessions_get: "sessions#nauta",

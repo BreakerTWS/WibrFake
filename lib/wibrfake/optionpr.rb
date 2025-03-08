@@ -18,7 +18,7 @@ module WibrFake
                     param.on('-m', '--mode MODE', String, 'mode to init program in gui or cli'){|mode|options.mode=mode}
                     param.on('-i', '--iface INTERFACE', String, 'Assign to Network Interface to operate'){|iface|options.iface=iface}
                     param.on('-w', '--wkdump FILE', String, 'Map to wibrfake dump file'){|wkdump|options.file_wkdump=wkdump}
-                    param.on('-t', '--list-interfaces', 'List the types of Wi-Fi network interfaces available'){WibrFake::Listing.wireless; exit 0}
+                    param.on('-l', '--list-interfaces', 'List the types of Wi-Fi network interfaces available'){WibrFake::Listing.wireless; exit 0}
                     param.on('-s', '--sessions', 'List the sessions actived'){
                         sessions = Array.new
                         Dir.each_child(File.join(File.dirname(__FILE__), 'Tmp')){|directory|

@@ -39,6 +39,20 @@ module WibrFake
                 "  reset" => "Reset your Mac permanently",
             }
 
+            comandos_apfake = {
+                "  show" => "Show current apfake options",
+                "  on" => "Activate rogue ap mode",
+                "  off" => "Desactivate rogue ap mode",
+                "  status" => "Rogue AP mode status"
+            }
+
+            comandos_web_server = {
+                "  show" => "Show current web server options",
+                "  on" => "Activate web server mode",
+                "  off" => "Desactivate web server mode",
+                "  status" => "Web Server mode status"
+            }
+
             # Formato de encabezado
             puts "Basics Commands".ljust(30) + "Description"
             puts "-" * 70
@@ -54,17 +68,20 @@ module WibrFake
             puts "\n" + "=" * 70 + "\n\n\n"
             puts "Wibrfake commands:"
             puts "-" * 70
-
-            comandos_apfake.each do |comando, descripcion|
-                puts "#{comando.ljust(30)} - #{descripcion}"
-            end 
-
-            puts "-" * 70
             puts "monitor [option]"
             comandos_monitor.each do |comando, descripcion|
                 puts "#{comando.ljust(30)} - #{descripcion}"
             end
-
+            puts "-" * 70
+            puts "apfake [option]"
+            comandos_apfake.each do |comando, descripcion|
+                puts "#{comando.ljust(30)} - #{descripcion}"
+            end 
+            puts "-" * 70
+            puts "web_server [option]"
+            comandos_web_server.each do |comando, descripcion|
+                puts "#{comando.ljust(30)} - #{descripcion}"
+            end 
             puts "-" * 70
             puts "mac [option]"
             comandos_mac.each do |comando, descripcion|

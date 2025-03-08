@@ -10,13 +10,11 @@ module WibrFake
                 require_relative 'ty/apld'
                 require_relative 'String/string'
                 require_relative 'Rails/login'
-                require_relative 'Scanner/active-hosts'
                 require_relative 'NetworkInterface/monitor'
                 require_relative 'NetworkInterface/mac'
                 require_relative 'Listing/ouis'
                 require_relative 'Listing/apfake'
-                require_relative 'Listing/server'
-                require_relative 'Listing/arp_scan'
+                require_relative 'Listing/web_server'
                 require_relative 'Listing/clients'
                 require_relative 'Listing/sessions'
                 require_relative 'Config/options'
@@ -72,9 +70,7 @@ module WibrFake
         end
         def start(options)
             validate_iface(options.iface)
-            prompt = $prompt
             options.server_web = Array.new
-            options.scan_arp = Array.new
             options.uuid = WibrFake::UUID.session(options.iface)
             options.iface_init = options.iface
             options.uuid_init = options.uuid
@@ -82,11 +78,11 @@ module WibrFake
             banner(id: options.uuid)
             prompt_color_valid = "\n\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{options.iface} \e[0m\033[38;5;236m\e[0m"
             prompt_color_invalid = "\n\033[38;5;236m\e[0m\033[48;5;236m\033[38;5;196m✘ wibrfake  #{options.iface} \e[0m\033[38;5;196m\e[0m"
-            commands = %w[help clear banner monitor server arp_scan apfake clients session mac apfake set run pkill show exit]
+            commands = %w[help clear banner monitor web_server apfake clients session mac apfake set run pkill show exit]
             WibrFake::Config.new(@configAP, options.iface, options.uuid)
             unless(options.file_wkdump.nil?)
                 dump = Array.new
-                puts "File wkdump loaded"
+                puts "\033[38;5;196m[\e[1;37m+\033[38;5;196m]\e[1;37m The session has been successfully loaded from a wkdump file"
                 File.open(options.file_wkdump, 'r').each{|wkdump|
                     dump << wkdump
                 }
@@ -98,6 +94,7 @@ module WibrFake
                         input = inp.next
                     rescue StopIteration
                         options.file_wkdump = nil
+                        @configAP.session_modified = true
                     end
                 end
                 if(options.file_wkdump.nil?)
@@ -129,12 +126,8 @@ module WibrFake
                         when 'show'
                             begin
                                 case input.split.fetch(1)
-                                when 'apfake'
-                                    WibrFake::Listing.apfake_show(@configAP, options.iface)
-                                when 'server'
-                                    WibrFake::Listing.server_show(@configAP)
-                                when 'arp_scan'
-                                    WibrFake::Listing.arp_scan_show(@configAP)
+                                when 'options'
+                                    WibrFake::Listing.show_process(options.iface)
                                 when 'process'
                                     begin
                                         WibrFake::Processes.status(input.split.fetch(2)).each{|process|
@@ -154,9 +147,9 @@ module WibrFake
                                     prompt_color_valid = prompt_color_invalid
                                 end
                             rescue IndexError
-                                #puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command show [options]. not found, Run the show command for more details."
-                                #prompt_color_valid = prompt_color_invalid
-                                WibrFake::Listing.show_process(options.iface)
+                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command show [options]. not found, Run the show command for more details."
+                                prompt_color_valid = prompt_color_invalid
+                                
                             rescue Errno::ENOENT => e
                                 puts e.message
                             end
@@ -165,15 +158,28 @@ module WibrFake
                                 case input.split.fetch(1)
                                 when 'iface'
                                     begin
-                                        options.iface = input.split.fetch(2)
+                                        if !(options.iface==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            options.iface = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            options.iface = input.split.fetch(2)
+                                        end
                                     rescue IndexError
-                                        puts "Falta el nombre de la interfaz de red"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Network interface name is missing"
                                     end
                                 when 'ssid'
                                     begin
-                                        @configAP.ssid = input.split[2..-1].join(" ")
+                                        if !(@configAP.ssid==input.split[2..-1].join(" ")) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.ssid = input.split[2..-1].join(" ")
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.ssid = input.split[2..-1].join(" ")
+                                        end
+                                        
                                     rescue IndexError
-                                        puts "Falta el nombre del punto de acceso"
+                                        warn "Falta el nombre del punto de acceso"
                                     end
                                 when 'password'
                                     begin
@@ -181,150 +187,234 @@ module WibrFake
                                             puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command set password. not disponible, configure wpa authentication, use \"set wp [AUTHENTICATION]\""
                                             prompt_color_valid = prompt_color_invalid
                                         else
-                                            @configAP.password = input.split.fetch(2)
-                                            @configAP.wpa = "wpa2"
+                                            if !(@configAP.password==input.split.fetch(2)) and @configAP.session_modified
+                                                options.session.session_modified(status: true, id: options.uuid)
+                                                @configAP.password = input.split.fetch(2)
+                                                @configAP.wpa = "wpa2"
+                                            elsif !(@configAP.session_modified)
+                                                options.session.session_modified(status: false, id: options.uuid)
+                                                @configAP.password = input.split.fetch(2)
+                                                @configAP.wpa = "wpa2"
+                                            end
+                                            
                                         end
                                     rescue IndexError
-                                        puts "Falta la contrasena del punto de acceso"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Access point password is missing"
                                     end
                                 when 'driver'
                                     begin
-                                        @configAP.driver = input.split.fetch(2)
+                                        if !(@configAP.driver==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.driver = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.driver = input.split.fetch(2)
+                                        end
+                                        
                                     rescue IndexError
-                                        puts "Falta el nombre del driver de la red"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Network driver name missing"
                                     end
                                 when 'ignore_ssid'
                                     begin
-                                        @configAP.ignore_ssid = input.split.fetch(2)
+                                        if !(@configAP.ignore_ssid==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.ignore_ssid = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.ignore_ssid = input.split.fetch(2)
+                                        end
                                     rescue IndexError
-                                        puts "Falta el la configuracion de ingore ssid"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Ingore ssid configuration is missing"
                                     end
                                 when 'hw_mode'
                                     begin
-                                        @configAP.hw_mode = input.split.fetch(2)
+                                        if !(@configAP.hw_mode==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.hw_mode = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.hw_mode = input.split.fetch(2)
+                                        end
                                     rescue IndexError
-                                        puts "Falta el modo hw"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Hw mode missing"
                                     end
                                 when 'login'
                                     begin
                                         if(WibrFake::RailsLogin.validate?(input.split.fetch(2)))
-                                            @configAP.login = input.split.fetch(2)
+                                            if !(@configAP.login==input.split.fetch(2)) and @configAP.session_modified
+                                                options.session.session_modified(status: true, id: options.uuid)
+                                                @configAP.login = input.split.fetch(2)
+                                            elsif !(@configAP.session_modified)
+                                                options.session.session_modified(status: false, id: options.uuid)
+                                                @configAP.login = input.split.fetch(2)
+                                            end   
                                         else
                                             puts "login not found"
                                         end
                                     rescue IndexError
-                                        puts "Falta el login del punto de acceso"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Access point login is missing"
                                     end
                                 when 'route'
                                     begin
-                                        @configAP.login_route = input.split.fetch(2)
+                                        if !(@configAP.login_route==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.login_route = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.login_route = input.split.fetch(2)
+                                        end 
                                     rescue IndexError
-                                        puts "Falta la ruta del login"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Web server login path missing"
                                     end
                                 when 'port'
                                     begin
-                                        @configAP.port = input.split.fetch(2).to_i
+                                        if !(@configAP.port==input.split.fetch(2).to_i) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.port = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.port = input.split.fetch(2)
+                                        end
                                     rescue IndexError
-                                        puts "Falta el puerto del login"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m The port is missing"
                                     end
                                 when 'wp'
                                     begin
                                         if(input.split.fetch(2)=="wpa2") or (input.split.fetch(2)=="wpa") or (input.split.fetch(2)=="wep")
-                                            @configAP.wpa = input.split.fetch(2)
-                                            @configAP.wpa_pairwise = "CCMP" if(input.split.fetch(2)=="wpa")
-                                            @configAP.wpa_key_mgmt = "WPA-PSK" if(input.split.fetch(2)=="wpa")
-                                            @configAP.wpa_wep = @configAP.wpa=="wep"? "wep":nil
-                                            @configAP.required_pass = "yes"
+                                            if !(@configAP.wpa==input.split.fetch(2)) and @configAP.session_modified
+                                                options.session.session_modified(status: true, id: options.uuid)
+                                                @configAP.wpa = input.split.fetch(2)
+                                                @configAP.wpa_pairwise = "CCMP" if(input.split.fetch(2)=="wpa")
+                                                @configAP.wpa_key_mgmt = "WPA-PSK" if(input.split.fetch(2)=="wpa")
+                                                @configAP.wpa_wep = @configAP.wpa=="wep"? "wep":nil
+                                                @configAP.required_pass = "yes"
+                                            elsif !(@configAP.session_modified)
+                                                options.session.session_modified(status: false, id: options.uuid)
+                                                @configAP.wpa = input.split.fetch(2)
+                                                @configAP.wpa_pairwise = "CCMP" if(input.split.fetch(2)=="wpa")
+                                                @configAP.wpa_key_mgmt = "WPA-PSK" if(input.split.fetch(2)=="wpa")
+                                                @configAP.wpa_wep = @configAP.wpa=="wep"? "wep":nil
+                                                @configAP.required_pass = "yes"
+                                            end
                                         elsif(input.split.fetch(2)=="nil") or (input.split.fetch(2)=="none")
-                                            @configAP.wpa = nil
+                                            if !(@configAP.wpa==nil)
+                                                options.session.session_modified(status: true, id: options.uuid)
+                                                @configAP.wpa = nil
+                                            elsif !(@configAP.session_modified)
+                                                options.session.session_modified(status: false, id: options.uuid)
+                                                @configAP.wpa = nil
+                                            end                                            
                                         else
-                                            puts "Metodo de seguridad wpa no existe"
+                                            warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m WPA security method does not exist"
                                         end
                                     rescue IndexError
-                                        puts "Falta el metodo de seguridad del punto de acceso"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Access point security method is missing"
                                     end
                                 when 'pairwise'
                                     begin
                                         if(WibrFake::SecurityWPA.scan_pairwise(@configAP.wpa, input.split.fetch(2))==1)
                                             prompt_color_valid = prompt_color_invalid
                                         else
-                                            puts "kndela"
-                                            @configAP.wpa_pairwise = input.split.fetch(2)
+                                            if !(@configAP.wpa_pairwise==input.split.fetch(2)) and @configAP.session_modified
+                                                options.session.session_modified(status: true, id: options.uuid)
+                                                @configAP.wpa_pairwise = input.split.fetch(2)
+                                            elsif !(@configAP.session_modified)
+                                                options.session.session_modified(status: false, id: options.uuid)
+                                                @configAP.wpa_pairwise = input.split.fetch(2)
+                                            end
                                         end
                                     rescue IndexError
-                                        puts "Falta el cifrado de seguridad del punto de acceso"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Access point security encryption is missing"
                                     end
                                 when 'key_mgmt'
                                     begin
                                         if(WibrFake::SecurityWPA.scan_mgmt(@configAP.wpa, input.split.fetch(2))==1)
                                             prompt_color_valid = prompt_color_invalid
                                         else
-                                            puts "Kndela"
-                                            @configAP.wpa_key_mgmt = input.split.fetch(2)
+                                            if !(@configAP.wpa_key_mgmt==input.split.fetch(2)) and @configAP.session_modified
+                                                options.session.session_modified(status: true, id: options.uuid)
+                                                @configAP.wpa_key_mgmt = input.split.fetch(2)
+                                            elsif !(@configAP.session_modified)
+                                                options.session.session_modified(status: false, id: options.uuid)
+                                                @configAP.wpa_key_mgmt = input.split.fetch(2)
+                                            end
                                         end
                                     rescue IndexError
-                                        puts "Falta el metodo de seguridad del punto de acceso"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Access point security method is missing"
                                     end
                                 when 'gateway'
                                     begin
-                                        @configAP.ipaddr = WibrFake::IPAddr.new(input.split.fetch(2))
-                                        @configAP.host_scan_arp = @configAP.ipaddr
+                                        if !(@configAP.ipaddr==WibrFake::IPAddr.new(input.split.fetch(2))) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.ipaddr = WibrFake::IPAddr.new(input.split.fetch(2))
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.ipaddr = WibrFake::IPAddr.new(input.split.fetch(2))
+                                        end
                                     rescue IndexError
-                                        puts "Falta el inet"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Inet is missing"
                                     rescue IPAddr::InvalidAddressError
-                                        puts "Formato de ip erroneo"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Wrong IP Format"
                                     end
                                 when 'netmask'
                                     begin
-                                        @configAP.ipaddr.defined_mask(input.split.fetch(2))
+                                        if !(@configAP.ipaddr.mask==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.ipaddr.defined_mask(input.split.fetch(2))
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.ipaddr.defined_mask(input.split.fetch(2))
+                                        end
                                     rescue IndexError
-                                        puts "Falta la mascara de red"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Net mask missing"
                                     end
                                 when 'rekey'
                                     begin
-                                        @configAP.wpa_rekey = input.split.fetch(2)
+                                        if !(@configAP.wpa_rekey==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.wpa_rekey = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.wpa_rekey = input.split.fetch(2)
+                                        end
                                     rescue IndexError
-                                        puts "Falta la configuracion de wpa rekey"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m WPA rekey configuration is missing"
                                     end
                                 when 'channel'
                                     begin
-                                        @configAP.channel = input.split.fetch(2)
+                                        if !(@configAP.channel==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.channel = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.channel = input.split.fetch(2)
+                                        end
                                     rescue IndexError
-                                        puts "Falta el canal"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m The channel is missing"
                                     end
                                 when 'wmm'
                                     begin
-                                        @configAP.wmm = input.split.fetch(2)
+                                        if !(@configAP.wmm==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.wmm = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.wmm = input.split.fetch(2)
+                                        end
                                     rescue IndexError
-                                        puts "Falta el si habilita la virtualicacion o la desabilita"
-                                    end
-                                when 'host'
-                                    begin
-                                        @configAP.host_scan_arp = WibrFake::IPAddr.new(input.split.fetch(2))
-                                        @configAP.host_init_scan_arp = @configAP.host_scan_arp.to_s
-                                        @configAP.host_last_scan_arp = @configAP.host_scan_arp.succ("254")
-                                    rescue IndexError
-                                        puts "Falta el host"
-                                    end
-                                when 'host_init'
-                                    begin
-                                        @configAP.host_init_scan_arp = input.split.fetch(2)
-                                        @configAP.host_scan_arp = WibrFake::IPAddr.new(WibrFake::IPAddr.init(input.split.fetch(2)))
-                                    rescue IndexError
-                                        puts "Falta el host inicial"
-                                    end
-                                when 'host_last'
-                                    begin
-                                        @configAP.host_last_scan_arp = input.split.fetch(2)
-                                        @configAP.host_scan_arp = WibrFake::IPAddr.new(WibrFake::IPAddr.init(input.split.fetch(2)))
-                                    rescue
-                                        puts "Falta el host final"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Missing if it enables virtualization or disables it"
                                     end
                                 when 'credentials'
                                     begin
-                                        @configAP.path_credential = input.split.fetch(2)
+                                        if !(@configAP.path_credential==input.split.fetch(2)) and @configAP.session_modified
+                                            options.session.session_modified(status: true, id: options.uuid)
+                                            @configAP.path_credential = input.split.fetch(2)
+                                        elsif !(@configAP.session_modified)
+                                            options.session.session_modified(status: false, id: options.uuid)
+                                            @configAP.path_credential = input.split.fetch(2)
+                                        end
                                     rescue
-                                        puts "Falta la ruta donde se va a guardar las credenciales"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m The path where the credentials will be saved is missing"
                                     end
                                 else
                                     puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command set [#{input.split.fetch(1)}]. not found, Run the help command for more details."
@@ -334,16 +424,6 @@ module WibrFake
                                 puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command set [options]. not found, Run the show command for more details."
                                 prompt_color_valid = prompt_color_invalid
                             end
-                        #when 'run'
-                        #    begin
-                        #        case input.split.fetch(1)
-                        #        when 'server'
-                        #            WibrFake::Rails.new(@configAP.host_server, @configAP.port, @configAP.login, @configAP.login_route).start
-                        #        end
-                        #    rescue IndexError
-                        #        WibrFake::Config.new(@configAP, options.iface)
-                        #        WibrFake::Apld.new(options.iface, @configAP.ipaddr,@configAP.ipaddr.ip_range)
-                        #    end
                         when 'pkill'
                             begin
                                 case input.split.fetch(1)
@@ -365,11 +445,7 @@ module WibrFake
                                     unless(WibrFake::Pkill.kill(input.split.fetch(1)))
                                         puts "#{input.split.fetch(1)} process not found running"
                                     end
-                                when 'server'
-                                    unless(WibrFake::Pkill.kill(input.split.fetch(1)))
-                                        puts "#{input.split.fetch(1)} process not found running"
-                                    end
-                                when 'arp_scan'
+                                when 'web_server'
                                     unless(WibrFake::Pkill.kill(input.split.fetch(1)))
                                         puts "#{input.split.fetch(1)} process not found running"
                                     end
@@ -378,7 +454,7 @@ module WibrFake
                                     prompt_color_valid = prompt_color_invalid
                                 end
                             rescue Errno::ESRCH
-                                puts "proceso no encontrado"
+                                warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m proceso no encontrado"
                             rescue IndexError
                                 puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command pkill [options]. not found, Run the help command for more details."
                                 prompt_color_valid = prompt_color_invalid
@@ -400,14 +476,13 @@ module WibrFake
                                 puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command monitor [options]. not found, Run the help command for more details."
                                 prompt_color_valid = prompt_color_invalid
                             end
-                        when 'server'
+                        when 'web_server'
                             begin
                                 case input.split.fetch(1)
                                 when 'on'
                                     options.server_web << WibrFake::Rails.new(@configAP.host_server, @configAP.port, @configAP.login, @configAP.login_route, @configAP.path_credential, options.iface, options.uuid).start
                                 when 'off'
-                                    WibrFake::Pkill.kill_silence("server")
-                                    
+                                    WibrFake::Pkill.kill_silence("web_server")
                                 when 'status'
                                     status = Array.new
                                     if(!options.server_web.empty?)
@@ -422,54 +497,21 @@ module WibrFake
                                         }
                                     end
                                     if(status.empty?)
-                                        warn "\e[1;33m[\e[1;37mi\e[1;33m]\e[1;37m no tienes ningun servidor web corriendo"
+                                        warn "\e[1;33m[\e[1;37m-\e[1;33m]\e[1;37m You don't have any web server running"
                                     else
                                         puts "Running servers:"
                                         puts
                                         puts status
-                                        puts "\nTo see the identification processes for each server running, run \"show process server\""
+                                        puts "\nTo see the identification processes for each server running, run \"show process web_server\""
                                     end
+                                when 'show'
+                                    WibrFake::Listing.web_server_show(@configAP)
                                 else
-                                    puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command server [#{input.split.fetch(1)}]. not found, Run the help command for more details."
+                                    puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command web_server [#{input.split.fetch(1)}]. not found, Run the help command for more details."
                                     prompt_color_valid = prompt_color_invalid
                                 end
                             rescue IndexError
-                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command server [options]. not found, Run the help command for more details."
-                                prompt_color_valid = prompt_color_invalid
-                            end
-                        when 'arp_scan'
-                            begin
-                                case input.split.fetch(1)
-                                when 'on'
-                                    if(@configAP.host_init_scan_arp.nil?) and (@configAP.host_last_scan_arp.nil?)
-                                        WibrFake::Scanner.hosts(iface: options.iface, range: @configAP.host_scan_arp.range(@configAP.host_init_scan_arp, @configAP.host_last_scan_arp))
-                                    else
-                                        WibrFake::Scanner.hosts(iface: options.iface, ipaddr: @configAP.host_scan_arp)
-                                    end
-                                    options.scan_arp << {host: @configAP.host_scan_arp.to_s, mask: @configAP.host_scan_arp.mask}
-                                when 'off'
-                                    WibrFake::Pkill.kill_silence("arp_scan")
-                                when 'status'
-                                    status = Array.new
-                                    WibrFake::Processes.status("arp_scan").each{|scan_pid|
-                                        status << scan_pid
-                                    }
-                                    if(status.empty?)
-                                        warn "\e[1;33m[\e[1;37mi\e[1;33m]\e[1;37m You don't have any host scanners by ARP running"
-                                        if(options.scan_arp.include?(host: @configAP.host_scan_arp.to_s))
-                                            options.scan_arp.delete(host: @configAP.host_scan_arp.to_s)
-                                        end
-                                    else
-                                        options.scan_arp.each{|scan|
-                                            puts "ARP scan running in #{scan[:host]}/#{scan[:mask]}"
-                                        }
-                                    end
-                                else
-                                    puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command arp_scan [#{input.split.fetch(1)}]. not found, Run the help command for more details."
-                                    prompt_color_valid = prompt_color_invalid
-                                end
-                            rescue IndexError
-                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command arp_scan [options]. not found, Run the help command for more details."
+                                puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command web_server [options]. not found, Run the help command for more details."
                                 prompt_color_valid = prompt_color_invalid
                             end
                         when 'apfake'
@@ -484,6 +526,8 @@ module WibrFake
                                     WibrFake::Pkill.kill_silence("hostapd")
                                 when 'status'
                                     
+                                when 'show'
+                                    WibrFake::Listing.apfake_show(@configAP, options.iface)
                                 else
                                     puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command apfake [#{input.split.fetch(1)}]. not found, Run the help command for more details."
                                     prompt_color_valid = prompt_color_invalid
@@ -503,7 +547,7 @@ module WibrFake
                                             WibrFake::Mac.set(options.iface, input.split.fetch(2))
                                         end
                                     rescue IndexError
-                                        puts "Falta de argumentos, la operacion mac set necesita una mac como entrada\n[mac set xx:xx:xx:xx:xx:xx]"
+                                        puts "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Lack of arguments, the mac set operation needs a mac as input\n[mac set xx:xx:xx:xx:xx:xx:xx]"
                                         prompt_color_valid = prompt_color_invalid
                                     end
                                 when 'ramset'
@@ -559,18 +603,20 @@ module WibrFake
                                         if(input.split.fetch(2))
                                             WibrFake::Session.new(id: input.split.fetch(2))
                                             WibrFake::Config.new(WibrFake::Config.apfake(OpenStruct.new), options.iface_init, input.split.fetch(2))
-                                            puts "[+] Nueva sesion creada: #{input.split.fetch(2)}"
+                                            puts "\033[38;5;46m[\e[1;37m+\033[38;5;46m]\e[1;37m New session created: #{input.split.fetch(2)}"
                                         end
                                     rescue IndexError
-                                        warn "No ha definido el nombre para la nueva sesion"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m You have not defined the name for the new session"
                                     end
                                 when 'remove'
                                     begin
                                         if(input.split.fetch(2))
-                                            options.session.remove(number: input.split.fetch(2))
+                                            if(options.session.remove(number: input.split.fetch(2), id: options.uuid))
+                                                options.uuid = nil
+                                            end
                                         end
                                     rescue IndexError
-                                        puts "No ha definido que sesion desea borrar"
+                                        puts "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m You have not defined which session you want to delete"
                                     end
                                 when 'rename'
                                     begin
@@ -582,11 +628,11 @@ module WibrFake
                                                     end
                                                 end
                                             rescue IndexError
-                                                warn "No ha definido un nombre para la sesion"
+                                                warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m You haven't defined a name for the session"
                                             end
                                         end
                                     rescue IndexError
-                                        warn "No se ha definido a que sesion renombrar"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Which session to rename has not been defined"
                                     end
                                 when 'save'
                                     WibrFake::Config.new(@configAP, options.iface, options.uuid)
@@ -596,15 +642,18 @@ module WibrFake
                                     begin
                                         if(input.split.fetch(2))
                                             options.uuid = options.session.init(number: input.split.fetch(2))
-                                            options.file_wkdump = File.join(File.dirname(__FILE__), 'Tmp', options.uuid, 'wkdump', "#{options.uuid}.wkdump")
-                                            dump = Array.new
-                                            File.open(options.file_wkdump, 'r').each{|wkdump|
-                                                dump << wkdump
-                                            }
-                                            inp = dump.each
+                                            if(options.uuid)
+                                                options.file_wkdump = File.join(File.dirname(__FILE__), 'Tmp', options.uuid, 'wkdump', "#{options.uuid}.wkdump")
+                                                dump = Array.new
+                                                File.open(options.file_wkdump, 'r').each{|wkdump|
+                                                    dump << wkdump
+                                                }
+                                                inp = dump.each
+                                            end
+                                            @configAP.session_modified = false
                                         end
                                     rescue IndexError
-                                        warn "No se ha definido la sesion a iniciar"
+                                        warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m The session to start has not been defined"
                                     end
                                 else
                                     puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command session [#{input.split.fetch(1)}]. not found, Run the help command for more details."

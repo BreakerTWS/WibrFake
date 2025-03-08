@@ -1,6 +1,0 @@
----
-WibrFake: Config
-session:
-  session_save: false
-  session_modified: false
-  name: hola

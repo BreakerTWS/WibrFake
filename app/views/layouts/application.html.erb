@@ -21,8 +21,7 @@
   <% if content_for?(:stylesheet) %>
   <%= yield :stylesheet %>
   
-<% else %>
-  <%= stylesheet_link_tag 'default' %> <!-- CSS para otras páginas -->
+
 <% end %>
 <% if content_for?(:javascript) %>
   <%= yield :javascript %>
