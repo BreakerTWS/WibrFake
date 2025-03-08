@@ -5,9 +5,9 @@ module WibrFake
             begin
                 oui = String.new
                 db = SQLite3::Database.new(File.join(File.dirname(__FILE__), '..', 'DataBase', 'ouis.db'))
-                organization = "Desconocido"
+                organization = "Unknown"
             rescue
-                puts "Falta la base de datos en la aplicacion"
+                warn "Missing database in application"
             end
             oui = mac.slice(0, 8)
             db.execute("SELECT id, name FROM ouis_mac WHERE oui = ?", oui){|row|
@@ -63,7 +63,7 @@ module WibrFake
                         if(status_set_mac.success?)
                             stdout_up, stderr_up, status_up = Open3.capture3("ip link set dev #{iface} up")
                             if(status_up.success?)
-                                puts "New mac ramdon: #{mac}"
+                                puts "New Random Mac: #{mac}"
                                 break
                             end
                         end
@@ -71,7 +71,7 @@ module WibrFake
                 end
             else
                 if(oui_ramset =~ /(?:[0-9A-F][0-9A-F][:\-]){2}[0-9A-F][0-9A-F]/i)
-                    puts "OUI ingresado"
+                    puts "OUI entered"
                     stdout_down, stderr_down, status_down = Open3.capture3("ip link set dev #{iface} down")
                     if(status_down.success?)
                         mac = oui_ramset + ':' + 3.times.map{"%02x" % rand(256)}.join(':')
@@ -79,7 +79,7 @@ module WibrFake
                         if(status_set_mac.success?)
                             stdout_up, stderr_up, status_up = Open3.capture3("ip link set dev #{iface} up")
                             if(status_up.success?)
-                                puts "New mac random of ui: #{mac}"
+                                puts "New random oui mac: #{mac}"
                             end
                         end
                     end
@@ -94,18 +94,16 @@ module WibrFake
                 current_mac, broadcast_mac, permanent_mac = macs
                 permanent_mac = permanent_mac || current_mac
                 if(permanent_mac==current_mac)
-                    puts "La mac actual es la permanente, ningun cambio aplicado"
+                    puts "The current mac is the permanent one, no changes applied"
                 else
-                    puts "Mac ingresada"
+                    puts "Mac entered"
                     stdout_down, stderr_down, status_down = Open3.capture3("ip link set dev #{iface} down")
                     if(status_down.success?)
-                        puts "Interfaz desactivada"
                         stdout_set_mac, stderr_set_mac, status_set_mac = Open3.capture3("ip link set #{iface} address #{permanent_mac}")
                         if(status_set_mac.success?)
-                            puts "Mac cambiada"
                             stdout_up, stderr_up, status_up = Open3.capture3("ip link set dev #{iface} up")
                             if(status_up.success?)
-                                puts "Mac cambiada satisfactoriamente"
+                                puts "Mac successfully changed"
                             end
                         end
                     end
