@@ -1,9 +1,13 @@
 class SessionsController < ApplicationController
+    def generate_204
+        session[:page_state] = '204'
+        head :no_content
+    end
     def index
         render "index"
     end
   
-    def page_basic
+    def basic
         render "basic"
     end
   
@@ -19,7 +23,10 @@ class SessionsController < ApplicationController
     end
 
     def wibrfake
-        render 'wibrfake'
+        render 'sessions/wibrfake/wibrfake'
+    end
+    def wibrfake_about
+        render 'sessions/wibrfake/about/about'
     end
   
     def basic_login

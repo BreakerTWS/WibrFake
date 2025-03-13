@@ -36,6 +36,7 @@ module WibrFake
                         end
                     }
                     param.separator ''
+                    param.on_tail('-u', '--usage', 'Launch usage server for wibrfake'){options.usage_server=true}
                     param.on_tail('-h', '--help', 'command to view help parameters'){puts param; exit}
                     param.on_tail('-V', '--version', 'show version'){puts "WibrFake version #{WibrFake.version}"; exit}
                 end.parse!
@@ -47,7 +48,7 @@ module WibrFake
         #Validate Interface
         #Enter wibrfake mode
             if(Process.uid==0)
-                unless options.mode.nil?
+                if(!options.mode.nil?)
                     if options.mode == 'cli'
                         wibrfake_cli.start(options)
                     elsif options.mode == 'gui'
@@ -55,6 +56,8 @@ module WibrFake
                     else
                         abort "\e[31m[\e[37m✘\e[31m]\e[37m Invalid mode"
                     end
+                elsif (!options.usage_server.nil?)
+                    wibrfake_cli.start(options)
                 end
             else
                 puts "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Access Denied"

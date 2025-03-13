@@ -6,6 +6,7 @@ module WibrFake
                 require 'fileutils'
                 require 'yaml'
                 require_relative 'Rails/service'
+                require_relative 'Rails/service_usage'
                 require_relative 'ty/prompt'
                 require_relative 'ty/apld'
                 require_relative 'String/string'
@@ -49,8 +50,7 @@ module WibrFake
                 ░     ░   ░         ░                   ░  ░░  ░      ░  ░
                                ░ """
             puts_red "\e[4m\t\t\t\tBy BreakerTWS #{WibrFake.version}\n", 1
-            puts "\n\033[38;5;196m[\e[1;37m+\033[38;5;196m]\e[1;37m session id: #{id}"
-
+            puts "\n\033[38;5;196m[\e[1;37m+\033[38;5;196m]\e[1;37m Session ID: #{id}"
         end
 
         def validate_iface(iface)
@@ -63,12 +63,15 @@ module WibrFake
                     end
                 }
                 unless(ifaces.include?(iface))
-                    puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m La interfaz #{iface}. no existe o no es una interfaz wifi"
+                    warn "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Interface #{iface} does not exist..."
                     exit 1
                 end
             end
         end
         def start(options)
+            if(options.usage_server)
+                WibrFake::RailsUsage.new.start
+            end
             validate_iface(options.iface)
             options.server_web = Array.new
             options.uuid = WibrFake::UUID.session(options.iface)
@@ -454,7 +457,7 @@ module WibrFake
                                     prompt_color_valid = prompt_color_invalid
                                 end
                             rescue Errno::ESRCH
-                                warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m proceso no encontrado"
+                                warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Process not found"
                             rescue IndexError
                                 puts "\n\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Command pkill [options]. not found, Run the help command for more details."
                                 prompt_color_valid = prompt_color_invalid
@@ -603,7 +606,6 @@ module WibrFake
                                         if(input.split.fetch(2))
                                             WibrFake::Session.new(id: input.split.fetch(2))
                                             WibrFake::Config.new(WibrFake::Config.apfake(OpenStruct.new), options.iface_init, input.split.fetch(2))
-                                            puts "\033[38;5;46m[\e[1;37m+\033[38;5;46m]\e[1;37m New session created: #{input.split.fetch(2)}"
                                         end
                                     rescue IndexError
                                         warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m You have not defined the name for the new session"
@@ -634,10 +636,12 @@ module WibrFake
                                     rescue IndexError
                                         warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m Which session to rename has not been defined"
                                     end
+                                when 'active'
+                                    options.session.active(id: options.uuid)
+                                    @configAP.session_remove = false
                                 when 'save'
                                     WibrFake::Config.new(@configAP, options.iface, options.uuid)
                                     options.session.save(id: options.uuid)
-                                    @configAP.session_remove = false
                                 when 'init'
                                     begin
                                         if(input.split.fetch(2))

@@ -76,7 +76,7 @@ module WibrFake
             configAP.login_route = "login/"
             configAP.driver = "nl80211"
             configAP.channel = 6
-            configAP.port = 3000
+            configAP.port = 80
             configAP.hw_mode = "g"
             configAP.wpa = nil
             configAP.wpa_pairwise = "CCMP"

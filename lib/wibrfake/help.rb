@@ -2,91 +2,96 @@ module WibrFake
     class Help
         def self.help
             puts "\n" + "=" * 70
-            puts " " * 20 + "HELP ME"
+            puts " " * 20 + "COMMAND REFERENCE"
             puts "=" * 70
             puts "\n"
 
-            comandos_basicos = {
-                "  help" => "Show the Help Panel",
-                "  clear" => "Clean the screen",
+            basic_commands = {
+                "  help" => "Display this help panel",
+                "  set" => "Configure access point parameters",
+                "  clear" => "Clear the terminal screen",
                 "  exit" => "Exit the program",
-                "  banner" => "Change the banner",
+                "  banner" => "Redisplay the banner"
             }
 
-            comandos_show = {
-                "  apfake" => "Show access point options",
-                "  server" => "Show web server options",
-                "  process" => "Show runner process",
-                "  login" => "Show available logins",
-            }
-            comandos_apfake = {
-                "  set" => "Map data",
-                "  clients" => "Clientes conectados"
+            show_commands = {
+                "  options" => "Show current configuration options and their status",
+                "  process" => "List running processes",
+                "  login" => "View available login templates"
             }
 
-            comandos_monitor = {
-                "  on" => "Activate monitor mode",
-                "  off" => "Desactivate monitor mode",
-                "  status" => "Monitor mode status",
+            session_commands = {
+                "  list" => "List all sessions",
+                "  new" => "Create new session",
+                "  rename" => "Rename existing session",
+                "  remove" => "Delete session",
+                "  save" => "Save current session",
+                "  activate" => "Mark session as persistent",
+                "  init" => "Load saved session"
             }
 
-            comandos_mac = {
-                "  show" => "Show current mac",
-                "  set [MAC]" => "Change mac",
-                "  ramset" => "Change mac to random",
-                "        └ [OUI]" => "Change mac random using an OUI",
-                "  list" => "List of OUIs you can use",
-                "  reset" => "Reset your Mac permanently",
+            monitor_commands = {
+                "  on" => "Enable monitor mode",
+                "  off" => "Disable monitor mode",
+                "  status" => "Check monitor status"
             }
 
-            comandos_apfake = {
-                "  show" => "Show current apfake options",
-                "  on" => "Activate rogue ap mode",
-                "  off" => "Desactivate rogue ap mode",
-                "  status" => "Rogue AP mode status"
+            client_commands = {
+                "  connected" => "Show connected devices",
+                "  disconnected" => "List disconnected devices",
+                "  logs" => "View connection history"
             }
 
-            comandos_web_server = {
-                "  show" => "Show current web server options",
-                "  on" => "Activate web server mode",
-                "  off" => "Desactivate web server mode",
-                "  status" => "Web Server mode status"
+            mac_commands = {
+                "  show" => "Display current MAC address",
+                "  set [MAC]" => "Set custom MAC address",
+                "  ramset" => "Generate random MAC address",
+                "        └ [OUI]" => "Use specific OUI prefix",
+                "  list" => "Browse valid OUI prefixes",
+                "  reset" => "Restore original MAC address"
             }
 
-            # Formato de encabezado
-            puts "Basics Commands".ljust(30) + "Description"
+            apfake_commands = {
+                "  show" => "View AP configuration",
+                "  on" => "Enable rogue AP mode",
+                "  off" => "Disable rogue AP mode",
+                "  status" => "Check AP status"
+            }
+
+            webserver_commands = {
+                "  show" => "Display server settings",
+                "  on" => "Start web server",
+                "  off" => "Stop web server",
+                "  status" => "Check server status"
+            }
+
+            # Formatting
+            puts "Basic Commands".ljust(30) + "Description"
             puts "-" * 70
-
-            comandos_basicos.each do |comando, descripcion|
-                puts "#{comando.ljust(30)} - #{descripcion}"
-            end
-            puts "-" * 70
+            basic_commands.each { |cmd, desc| puts "#{cmd.ljust(30)} - #{desc}" }
+            
+            puts "\n" + "-" * 70
             puts "show [option]"
-            comandos_show.each do |comando, descripcion|
-                puts "#{comando.ljust(30)} - #{descripcion}"
-            end
-            puts "\n" + "=" * 70 + "\n\n\n"
-            puts "Wibrfake commands:"
+            show_commands.each { |cmd, desc| puts "#{cmd.ljust(30)} - #{desc}" }
+            
+            puts "\n" + "=" * 70
+            puts "\nCore Commands:"
             puts "-" * 70
             puts "monitor [option]"
-            comandos_monitor.each do |comando, descripcion|
-                puts "#{comando.ljust(30)} - #{descripcion}"
-            end
-            puts "-" * 70
+            monitor_commands.each { |cmd, desc| puts "#{cmd.ljust(30)} - #{desc}" }
+            
+            puts "\n" + "-" * 70
             puts "apfake [option]"
-            comandos_apfake.each do |comando, descripcion|
-                puts "#{comando.ljust(30)} - #{descripcion}"
-            end 
-            puts "-" * 70
+            apfake_commands.each { |cmd, desc| puts "#{cmd.ljust(30)} - #{desc}" }
+            
+            puts "\n" + "-" * 70
             puts "web_server [option]"
-            comandos_web_server.each do |comando, descripcion|
-                puts "#{comando.ljust(30)} - #{descripcion}"
-            end 
-            puts "-" * 70
+            webserver_commands.each { |cmd, desc| puts "#{cmd.ljust(30)} - #{desc}" }
+            
+            puts "\n" + "-" * 70
             puts "mac [option]"
-            comandos_mac.each do |comando, descripcion|
-                puts "#{comando.ljust(30)} - #{descripcion}"
-            end
+            mac_commands.each { |cmd, desc| puts "#{cmd.ljust(30)} - #{desc}" }
+            
             puts "\n" + "=" * 70
         end
     end

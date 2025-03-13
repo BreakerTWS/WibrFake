@@ -26,9 +26,13 @@ module WibrFake
                     
                     ::Rails.application.routes.draw {
                         devise_for :users
-                        root to: route_root[:sessions_get], as: route_root[:as_get]
-                        get route_login[:route], to: route_login[:sessions_get], as: route_login[:as_get]
-                        post route_login[:route], to: route_login[:sessions_post], as: route_login[:as_post]
+                        if(route_login[:route]=='/')
+                            root to: route_root[:sessions_get], as: route_root[:as_get]
+                        else
+                            get route_login[:route], to: route_login[:sessions_get]
+                        end
+                        get route_login[:route_generate_204], to: route_login[:sessions_get], as: route_login[:as_get]
+                        post route_login[:route_generate_204], to: route_login[:sessions_post], as: route_login[:as_post]
                     }
                     Puma::Server.new(::Rails.application).tap {|server|
                         server.add_tcp_listener @host, @port

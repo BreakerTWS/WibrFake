@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wibrfake</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <% content_for :stylesheet do %>
+        <%= stylesheet_link_tag 'page_wibrfake' %>
+    <% end %>
+    <% content_for :javascript do %>
+			<%= javascript_include_tag 'page_wibrfake' %>
+	<% end %>
+    <% content_for :javascript do %>
+        <%= javascript_include_tag 'bootstrap.bundle.min' %>
+<% end %>
+    
+    
+</head>
+<body>
+    <div class="wrapper">
+<!-- Enhanced Sidebar Navigation -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3>
+                    <%= image_tag 'wibrfake/wibrfake-48x48.png', alt: 'wibrfake'%>
+                    Wibrfake
+                </h3>
+            </div>
+            <ul class="components">
+                <li class="active">
+                    <a href="#" onclick="showSection('dashboard-section')">
+                        <i class="fas fa-home" style="transform: translateX(0px);"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="collapsed">
+                    <a href="#staticSubmenu" data-bs-toggle="collapse">
+                        <i class="fas fa-house-signal" style="transform: translateX(0px);"></i>
+                        Usage
+                        <i class="fas fa-chevron-down menu-arrow"></i>
+                    </a>
+                    <ul class="collapse submenu" id="staticSubmenu" style="">
+                        <li>
+                            <a href="#initialize" onclick="showSubsection('usage-section', 'initialize')">
+                                <i class="fa fa-external-link-square" style="transform: translateX(0px);"></i>
+                                Initialize
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#macchanger" onclick="showSubsection('usage-section', 'macchanger')">
+                                <i class="fas fa-fingerprint" style="transform: translateX(0px);"></i>
+                                Mac Changer
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#wkdump" onclick="showSubsection('usage-section', 'wkdump')">
+                                <i class="fa-solid fa-file-circle-plus" style="transform: translateX(0px);"></i>
+                                Wkdump
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#sessions" onclick="showSubsection('usage-section', 'sessions')">
+                                <i class="fas fa-user-edit" style="transform: translateX(0px);"></i>
+                                Sessions
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="collapsed">
+                    <a href="#dynamicSubmenu" data-bs-toggle="collapse">
+                        <i class="fab fa-mandalorian" style="transform: translateX(0px);"></i>
+                        Attacks
+                        <i class="fas fa-chevron-down menu-arrow"></i>
+                    </a>
+                    <ul class="collapse submenu" id="dynamicSubmenu">
+                        <li>
+                            <a href="#rogueap" onclick="showSubsection('attacks-section', 'rogueap')">
+                                <i class="fas fa-wifi" style="transform: translateX(0px);"></i>
+                                Rogue AP
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#captiveportal" onclick="showSubsection('attacks-section', 'captiveportal')">
+                                <i class="fas fa-sign-in-alt" style="transform: translateX(0px);"></i>
+                                Captive Portal
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#eviltwin-section" onclick="showSubsection('attacks-section', 'eviltwin')">
+                                <i class="fas fa-user-group" style="transform: translateX(0px);"></i>
+                                Evil Twin
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/wibrfake/about/">
+                        <i class="fas fa-info-circle"></i>
+                        About
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="body-page" id="content">
+            <button class="nav-btn">hola</button>
+            <div id="dashboard-section" class="main-section active"></div>
+                <section class="body-img">
+                    <%= image_tag 'wibrfake/wibrfake.png', alt: 'wibrfake'%>
+                    <span class="circle-spin"></span>
+                </section>
+
+                <div class="row justify-content-center">
+                    <section class="info-wibrfake text-center">
+                        <div class="info-card-summary mt-5">
+                            <div class="info-tittle">
+                                <h2>WibrFake</h2>
+                            </div>
+                            <div class="features-grid mt-4">
+                                <div class="feature-item feature-item-hover">
+                                    <div class="info-summary">
+                                        <p>WibrFake is an advanced tool designed to help researchers and security professionals assess Wi-Fi network vulnerabilities through Rogue Access Point (AP) techniques. It allows you to simulate a malicious access point, making it easier to identify weaknesses in wireless network security and user behavior. With an intuitive interface and customizable functionalities, WibrFake allows for real-time penetration testing and traffic analysis.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+                
+                <section id="usage-section" class="main-section" style="display:none">
+                    
+                    <div class="initialize info-card" id="initialize">
+                        <div class="initialize-tittle">
+                            <h2>Initialize</h2>
+                        </div>
+                        <p>Help Command</p>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item">
+                                <p><span class="command">wibrfake</span> <span class="parameter">--help</span></p>
+                            </div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-init.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>To start in wibrfake, we have to choose the interface, in this case we will start with the command line interface (CLI) with the parameter [--mode], and we must also put the network interface which we operate with [--iface], in my case it is (wlo1)</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item">
+                                <p><span class="command">wibrfake</span> <span class="parameter">--mode</span> <span class="valor">cli</span> <span class="parameter">--iface</span> <span class="valor">wlo1</span></p>
+                            </div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-init2.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>To view the help panel run 'help'</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="img-help"><%= image_tag 'wibrfake/wibrfake-help.png', class: 'wibrfake-img-help', alt: 'wibrfake'%></div>
+                            
+                        </div>
+                    </div>
+                    <div class="space"></div>
+                    <div class="macchanger info-card" id="macchanger">
+                        <div class="macchanger-tittle">
+                            <h2>Mac Changer</h2>
+                        </div>
+                        <div class="summary"><p>A MAC change (or MAC spoofing) refers to modifying the MAC (Media Access Control) address assigned to a network device (such as a Wi-Fi card, Ethernet, etc.) to replace it with a different address. The MAC address is a unique and permanent identifier assigned by the manufacturer, but it is possible to alter it temporarily or permanently using specific software or tools.</p></div>
+                        <div class="summary"><p>To show your mac:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item">
+                                <p><span class="command">mac</span> <span class="parameter">show</span></p>
+                            </div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-mac-show.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>An OUI (Organizationally Unique Identifier) is a unique 3-byte (24-bit) code assigned by the IEEE (Institute of Electrical and Electronics Engineers) to network device manufacturers. This identifier forms the first half of a MAC (Media Access Control) address and allows the manufacturer of a device (network card, router, smartphone, etc.) to be recognized globally.</p></div>
+                        <div class="summary"><p>To display the list of OUIs:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item">
+                                <p><span class="command">mac</span> <span class="parameter">list</span></p>
+                            </div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-mac-list.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/mac-list-parameter.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>To assign a new MAC address:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item">
+                                <p><span class="command">mac</span> <span class="parameter">set</span> <span class="valor">2a:af:19:f6:27:54</span></p>
+                            </div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-mac-set.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>To assign a new random MAC address:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item">
+                                <p><span class="command">mac</span> <span class="parameter">ramset</span></p>
+                            </div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-mac-ramset.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>To assign a new random MAC address based on an OUI:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item">
+                                <p><span class="command">mac</span> <span class="parameter">ramset</span> <span class="valor">fc:58:fa</span></p>
+                            </div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-mac-ramset-oui.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                    </div>
+                    <div class="space"></div>
+                    <div class="wkdump info-card" id="wkdump">
+                        <div class="macchanger-tittle">
+                            <h2>File WKdump</h2>
+                        </div>
+                        <div class="summary"><p>The .wkdump extension is Wibrfake files, a malicious configuration file designed to automate advanced network attacks, such as the creation of rogue APs (fake access points), fraudulent captive portals, or evil twin attacks. This file allows you to execute predefined scripts in Wibrfake without manual intervention, streamlining illegal or ethical operations.</p></div>
+                        <div class="summary"><p>To create and configure a wkdump file:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">touch</span> <span class="parameter">archive.wkdump</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">nano</span> <span class="parameter">archive.wkdump</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-wkdump.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>Details of the above configuration:</p></div>
+                        <div class="feature-item"><p><span class="command">set</span> <span class="parameter">ssid</span> <span class="valor">Wifi_Free</span> #The command 'set ssid' is to assign a name to the access point.<br><span class="command">set</span> <span class="parameter">channel</span> <span class="valor">6</span> #The 'set channel' command is for assigning a channel to the access point.<br><span class="command">set</span> <span class="parameter">gateway</span> <span class="valor">192.168.1.1</span> #The 'set gateway' command is for assigning an IP address to the access point (router).</p></div>
+                        <div class="summary"><p>We are now ready to upload the file to wibrfake</p></div>
+                        <div class="summary"><p>To upload the file is with the following command:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">wibrfake</span> <span class="parameter">--mode</span> <span class="valor">cli</span> <span class="parameter">--iface</span> <span class="valor">wlo1</span> <span class="parameter">--wkdump</span> <span class="valor">archive.wkdump</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-wkdump-loaded.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                    </div>
+                    <div class="space"></div>
+                    <div class="sessions info-card" id="sessions">
+                        <div class="sessions-tittle">
+                            <h2>Sessions</h2>
+                        </div>
+                        <div class="summary"><p>Tool that manages network operations (attacks or tests) through individual sessions with unique ID and predefined configuration (e.g.: attack type, interface). It allows you to create, delete, activate, rename, save (in .wksession files), and run multiple sessions in parallel. It facilitates organization and efficiency by avoiding manual reconfigurations. The session will be automatically deleted when you exit the application unless you activate it.</p></div>
+                        <div class="summary"><p>To display created sessions:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">session</span> <span class="parameter">list</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-session-list.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>On the right side when listing the sessions, there are 2 descriptions, one tells you if the session is active or not, what does this mean? It means that if it is active, the session will remain saved in the application and you will always be able to use it whenever you want, otherwise the session is not active, it will be automatically deleted when you exit the application. And the other one tells you if the session is saved or not, what does this mean? That if it is saved it is that the changes made in the session were saved, in the opposite case that it is not saved the changes will not be saved, this second one goes very hand in hand with the premium, but they are not the same, you need to activate the session before.</p></div>
+                        <div class="summary"><p>Now let's rename the current session for easier recall.</p></div>
+                        <div class="summary"><p>To rename a session:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">session</span> <span class="parameter">rename</span> <span class="valor">wlo1-202503081740070500-cdf9d0-7a9baf602770</span> <span class="valor">session1</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-session-rename.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>Let's now look at how to create a new session in case we want to handle multiple attacks</p></div>
+                        <div class="summary"><p>To create a new session:</p></div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-session-new.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>What if we want to enter that new session that we have just created? Easy.</p></div>
+                        <div class="summary"><p>To log in:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">session</span> <span class="parameter">init</span> <span class="valor">session1</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-session-init.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>Previously we logged in to the 'session1' session, we no longer need the previous session, what if we delete it?.</p></div>
+                        <div class="summary"><p>To delete it:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">session</span> <span class="parameter">remove</span> <span class="valor">wlo1-202503081750370500-041dd9-18473dabb7cf</span></p></div>
+                        </div>
+                        <div class="summary"><p>Now comes the most important thing, if we want to activate the session with all the changes already made to be able to use it later</p></div>
+                        <div class="summary"><p>We can use this:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">session</span> <span class="parameter">active</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-session-active.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>Perfect, now the session called 'session1' will be active until you delete it, if you make any configuration changes while in that session to save the configuration, it's very easy</p></div>
+                        <div class="summary"><p>We can use this:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">session</span> <span class="parameter">save</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-session-save.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                    </div>
+                    </div>
+                </section>
+
+
+                <section id="attacks-section" class="main-section" style="display:none">
+                    <div class="rogueap info-card" id="rogueap">
+                        <div class="rogueap-tittle">
+                            <h2>Rogue AP</h2>
+                        </div>
+                        <p>A Rogue AP (Fake Access Point) is a fake Wi-Fi network created to trick users into stealing their data (passwords, banking information) or infiltrating malware. The WibrFake tool automates this attack: it simulates legitimate networks (e.g., "Wifi_Free") and captures traffic using techniques such as Man-in-the-Middle or phishing, redirecting to fake pages to obtain credentials. In addition, it can inject malware into connected devices.</p>
+                        <div class="summary"><p>To begin with, we must know that wibrfake is already preconfigured to mount fake access points automatically, just run, start wibrfake and launch the access point.</p></div>
+                        <div class="summary"><p>To view the preset use:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">apfake</span> <span class="parameter">show</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-apfake-show.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>As we can see, wibrfake already provides us with a preconfiguration, we just have to launch the fake access point.</p></div>
+                        <div class="summary"><p>So, since everything is already preconfigured, we are only going to change the ssid and the gateway to the access point.</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item">
+                                <p><span class="command">set</span> <span class="parameter">ssid</span> <span class="valor">Wifi_Free</span> #The command 'set ssid' is to assign a name to the access point.
+                                <span class="command">set</span> <span class="parameter">gateway</span> <span class="valor">192.168.1.1</span> #The 'set gateway' command is for assigning an IP address to the access point (router).
+                                </p>
+                            </div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-apfake-set-basic.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>We are now ready to launch the access point</p></div>
+                        <div class="summary"><p>To launch it use:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">apfake</span> <span class="parameter">on</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-apfake-on.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>Before launching an access point, wibrfake creates the environment to work, configures 192.168.1.1 for the network interface, in my case (wlo1 passing it through the default network gateway), and sets a routing rule so that all outbound traffic from the fake network is routed through 192.168.1.1. This allows the attacker to intercept, modify, or block packets.</p></div>
+                        <div class="summary"><p>So, after launching the hotspot, we run:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">show</span> <span class="parameter">options</span></p></div>
+                        </div>
+                        <div class="summary"><p>To view the status of the access point</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="img-help"><%= image_tag 'wibrfake/wibrfake-hostpot.png', class: 'wibrfake-img-help', alt: 'wibrfake'%></div>
+                        </div>
+                    </div>
+                    <div class="captiveportal info-card" id="captiveportal">
+                        <div class="captiveportal-tittle">
+                            <h2>Captive Portal</h2>
+                        </div>
+                        <h3>Rogue AP + Captive Portal</h3>
+                        <p>The captive portal is a fraudulent page that forces victims to enter their data (credentials, credit card information, SMS) when connecting to a fake Wi-Fi network. Here's how it works:</p>
+                        <ul>
+                            <li>Malicious redirection: When trying to browse, WibrFake intercepts traffic and displays a portal that mimics real services (e.g. Gmail login, Nauta, Facebook).</li>
+                            <li>Information theft: Records everything entered (passwords, bank details)</li>
+                            <li>Controlled access: After the theft, you can allow the Internet so as not to alert the victim, while still monitoring their activity.</li>
+                        </ul>
+                        <div class="summary"><p>Example: A fake "Wifi_Free" AP redirects to a cloned Starbucks portal where the victim enters their email and password, which WibrFake stores for spoofing.</p></div>
+                        <p>So, let's start with the captive portal, this module also offers us a help panel and even presets to use.</p>
+                        <div class="summary"><p>To view captive portal presets:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">web_server</span> <span class="parameter">show</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-web-server-show.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>By default WibrFake in the captive portal attack already has some predefined configurations, let's see them:</p></div>
+                        <ul>
+                            <li>Login: In login the type of login that is going to be used in the captive portal is assigned, in this case a basic login made of an html structure is assigned by default.</li>
+                            <li>Route: The route parameter is used to manage the route where the page is going to be viewed, in this case it is set to 'login/'.</li>
+                            <li>Host: This parameter is to assign the host where the web server is going to be hosted and who can access them, in this case '0.0.0.0', that is, anyone can access it.</li>
+                            <li>Port: This is for assigning a port to the web server. It functions as a "virtual gateway" that organizes and directs data traffic to the correct program.</li>
+                            <li>Credentials: Credentials are used to assign where to store the captured credentials, in this case it is empty, that is, it is not going to be saved</li>
+                        </ul>
+                        <div class="summary"><p>Since everything was already pre-configured, we're launching the captive portal</p></div>
+                        <div class="summary"><p>We launched the Captive Portal with:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">web_server</span> <span class="parameter">on</span></p></div>
+                        </div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-web-server-on.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                        <div class="summary"><p>Since the rogue ap + captive portal was launched, I will now connect my android device to the hotspot to test</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="img-help"><%= image_tag 'wibrfake/wibrfake-need-signin.jpg', class: 'wibrfake-img-help', alt: 'wibrfake'%></div>
+                        </div>
+                        <div class="summary"><p>As we can see, I am already connected to the access point and this is the result:</p></div>
+                        <div class="features-grid mt-4">
+                            <div class="img-help"><%= image_tag 'wibrfake/wibrfake-login-basic.jpg', class: 'wibrfake-img-help', alt: 'wibrfake'%></div>
+                        </div>
+                        <div class="summary"><p>Once the basic login has been shown as a captive portal, I will put the credentials User: breaker, Password: HolaMundo</p></div>
+                        <div class="summary"><p>Here's the bottom line:</p></div>
+                        <div class="features-grid mt-4">
+                            <%= image_tag 'wibrfake/wibrfake-web-server-apfake.png', class: 'wibrfake-img', alt: 'wibrfake'%>
+                        </div>
+                    </div>
+                    <div class="eviltwin info-card">
+                        <div class="eviltwin-tittle">
+                            <h2>Evil Twin</h2>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio magni, libero pariatur iusto amet ipsam nisi consectetur itaque dolores molestiae enim ducimus numquam reiciendis sunt voluptas laudantium laboriosam, delectus animi.</p>
+                        
+                        <div class="features-grid mt-4">
+                            <div class="feature-item"><p><span class="command">session</span> <span class="parameter">save</span></p></div>
+                        </div>
+                    </div>
+                </section>
+                
+
+        </div>
+        
+
+
+<protonpass-root-2e6e data-protonpass-role="root" data-protonpass-theme="dark"></protonpass-root-2e6e></body></html>

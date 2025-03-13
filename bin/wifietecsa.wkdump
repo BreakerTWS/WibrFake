@@ -1,6 +1,0 @@
-set ssid WIFI_ETECSA
-set gateway 192.168.1.1
-set login wifietecsa
-set route generate_204
-set port 80
-set credentials credentials.txt

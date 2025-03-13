@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - WibrFake</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <% content_for :stylesheet do %>
+        <%= stylesheet_link_tag 'page_wibrfake_about' %>
+    <% end %>
+    <% content_for :javascript do %>
+			<%= javascript_include_tag 'page_wibrfake_about' %>
+		<% end %>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+<a class="navbar-brand" href="/">
+                    <!--<i class="fas fa-shield-virus me-2"></i> -->
+                    
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/wibrfake"><i class="fas fa-home me-1"></i> Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/about"><i class="fas fa-info-circle me-1"></i> About</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="about-section">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <div class="about-header text-center">
+<i class="fas  fa-3x mb-4 glow-icon"><%= image_tag 'wibrfake/wibrfake-100x100.png', class: 'glow-icon', alt: 'wibrfake'%></i>
+
+    
+                            <h1>About</h1>
+                            <p class="lead">A powerful advanced cybersecurity tool developed for the creation of rogue access points </p>
+                        </div>
+
+<!-- Basic Information -->
+                        
+                        <div class="info-card mt-5">
+                            <h2><i class="fas fa-info-circle me-2 glow-icon"></i>Warning</h2>
+                            
+                            <div class="features-grid mt-4">
+                                <div class="feature-item">
+                                    <i class="fas fa-check"></i>
+                                    <p>If you use Wibrfake to create rogue APs, captive portals, or "evil twin" attacks to steal data, impersonate networks, or deceive users, you are violating cybercrime, data protection, and phishing laws. These actions can lead to criminal proceedings (imprisonment/fines), civil compensation to victims and blocking of devices by authorities. Its use is only legal in authorized written security audits. Report their misuse to the tech police. Ethics are not optional.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project Description -->
+                        <div class="info-card mt-5">
+                            <h2><i class="fas fa-project-diagram me-2 glow-icon"></i>Project Overview</h2>
+                            <p>WibrFake is an advanced tool designed to help researchers and security analysts assess the vulnerability of Wi-Fi networks using the Rogue Access Point (AP) technique. It allows you to simulate a malicious access point, making it easier to identify weaknesses in wireless network security and user behavior. With an intuitive interface and customizable functionalities, WibrFake allows for real-time penetration testing and traffic analysis.</p>
+                            
+                            <div class="features-grid mt-4">
+<div class="project-feature">
+                                    <i class="fas fa-wifi"></i>
+                                    <h4>Rogue AP</h4>
+                                    <p>A Rogue AP is an unauthorized AP that simulates a legitimate network to intercept data.</p>
+                                </div>
+                                <div class="project-feature">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <h4>Portal Cautive</h4>
+                                    <p>A captive portal redirects users to a fake page to trick them and potentially steal their data.</p>
+                                </div>
+                                <div class="project-feature">
+                                    <i class="fas fa-network-wired"></i>
+                                    <h4>Evil Twin</h4>
+                                    <p>An evil twin attack involves creating a Rogue AP that mimics a legitimate network to steal credentials</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Team Section -->
+                        <div class="info-card mt-5">
+                            <h2><i class="fas fa-user me-2 glow-icon"></i>Author</h2>
+                            <div class="team-grid">
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <%= image_tag 'wibrfake/Breaker-Wallpaper1.jpg', style: 'width: 100px; height: 100px; border-radius: 50%;', alt: 'Breaker TWS'%>
+                                    </div>
+
+
+                                    <div class="social-links">
+                                        <a href="{{ member.portfolio }}" class="social-link" target="_blank" rel="noopener noreferrer">
+                                            <i class="fas fa-globe"></i>
+                                        </a>
+                                        <a href="{{ member.github }}" class="social-link" target="_blank" rel="noopener noreferrer">
+                                            <i class="fab fa-github"></i>
+                                        </a>
+                                        <a href="{{ member.linkedin }}" class="social-link" target="_blank" rel="noopener noreferrer">
+                                            <i class="fab fa-linkedin"></i>
+                                        </a>
+                                        <a href="{{ member.twitter }}" class="social-link" target="_blank" rel="noopener noreferrer">
+                                            <i class="fab fa-twitter"></i>
+                                        </a>
+
+                                        <a href="{{ member.youtube }}" class="social-link" target="_blank" rel="noopener noreferrer">
+                                            <i class="fab fa-youtube"></i>
+                                        </a>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Technologies -->
+                        <div class="info-card mt-5">
+                            <h2><i class="fas fa-laptop-code me-2 glow-icon"></i>Technologies Used</h2>
+<div class="tech-grid">
+
+                                <div class="tech-item">
+                                    <i class="fas fa-gem"></i>
+                                    <p>ruby</p>
+                                </div>
+                                <div class="tech-item">
+                                    <i class="fas fa-code"></i>
+                                    <p>rails</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Section -->
+                        <div class="info-card mt-5">
+                            <h2><i class="fas fa-envelope me-2 glow-icon"></i>Get in Touch</h2>
+                            <p>Have questions or suggestions? We'd love to hear from you!</p>
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <a href="mailto:breakingtws@gmail.com">breakingtws@gmail.com</a>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fab fa-github"></i>
+                                    <a href="https://github.com/BreakerTWS">BreakerTWS</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body> 
+</html>
