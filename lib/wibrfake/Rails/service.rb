@@ -29,7 +29,8 @@ module WibrFake
                         if(route_login[:route]=='/')
                             root to: route_root[:sessions_get], as: route_root[:as_get]
                         else
-                            get route_login[:route], to: route_login[:sessions_get]
+                            get route_login[:route_login], to: route_login[:sessions_get]
+                            
                         end
                         get route_login[:route_generate_204], to: route_login[:sessions_get], as: route_login[:as_get]
                         post route_login[:route_generate_204], to: route_login[:sessions_post], as: route_login[:as_post]

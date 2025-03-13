@@ -24,7 +24,7 @@ module WibrFake
                 routes = [{sessions_get: "sessions#nauta", as_get: :page_index}]
                 routes << {
                     route_generate_204: 'generate_204/',
-                    route: route,
+                    route_login: route,
                     sessions_get: "sessions#nauta",
                     sessions_post: "sessions#nauta_login",
                     as_get: "nauta_login",

@@ -1,4 +1,4 @@
-
+=begin
 require 'fileutils'
 require 'thread'
 require_relative "#{File.join(File.dirname(__FILE__), 'String', 'string')}"
@@ -23,3 +23,4 @@ begin
     FileUtils.touch(File.join(File.dirname(__FILE__), 'config.rb'))
 rescue Errno::EACCES
 end
+=end
