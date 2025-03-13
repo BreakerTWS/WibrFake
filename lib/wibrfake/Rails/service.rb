@@ -21,7 +21,7 @@ module WibrFake
         def start
             begin
                 server_pid = fork {
-                    route_root, route_login = WibrFake::Rails.routes(@login, @route)
+                    route_root, route_login = WibrFake::Rails.routes(login: @login, route: @route)
                     ::Rails.application.routes.clear!
                     
                     ::Rails.application.routes.draw {
