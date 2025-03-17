@@ -57,6 +57,12 @@ module WibrFake
                 "  off" => "Disable rogue AP mode",
                 "  status" => "Check AP status"
             }
+            
+            clients_commands = {
+                "  connected" => "list of currently connected clients",
+                "  disconnected" => "recently disconnected clients",
+                "  logs" => "full interaction history with access point"
+              }
 
             webserver_commands = {
                 "  show" => "Display server settings",
@@ -84,6 +90,10 @@ module WibrFake
             puts "apfake [option]"
             apfake_commands.each { |cmd, desc| puts "#{cmd.ljust(30)} - #{desc}" }
             
+            puts "\n" + "-" * 70
+            puts "clients [option]"
+            clients_commands.each { |cmd, desc| puts "#{cmd.ljust(30)} - #{desc}" }
+
             puts "\n" + "-" * 70
             puts "web_server [option]"
             webserver_commands.each { |cmd, desc| puts "#{cmd.ljust(30)} - #{desc}" }

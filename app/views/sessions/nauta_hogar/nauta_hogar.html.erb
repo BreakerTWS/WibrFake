@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+	
+		<title>Bienvenido</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-store">
+		<meta http-equiv="expires" content="0">
+		<meta http-equiv="keywords" content=" ">
+		<meta http-equiv="description" content=" ">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <% content_for :stylesheet do %>
+			<%= stylesheet_link_tag 'nauta_hogar/page_nauta' %>
+		<% end %>
+		<!--<link href="/nauta_hogar/LoginURL/css/form.css" rel="stylesheet" type="text/css">-->
+	</head>
+
+<body>
+	<div id="header">
+		<div class="div-ext-izq">
+        </div>
+        <div class="img-fondo">
+        </div>
+        <div class="div-center">
+            <div class="separad">
+                <div id="caja">
+                    <%= image_tag 'nauta_hogar/banner_hogar.png', id: 'fondo', style: 'z-index:1' %>
+                </div>                
+            </div>
+        </div>
+        <div class="img-fondo">
+        </div>
+        <div class="div-ext-der">
+        </div>
+	</div>
+	<div class="div-info">
+        <div class="fecha">Cuba, 08 January 2025</div>
+        <div class="divespace"> &nbsp;  </div>
+        <div class="idioma">
+	     <a href="#" onclick="javascript:switchLang('es_ES')" class="selec" id="es_ESsel">Español</a>
+		 <a href="#" onclick="javascript:switchLang('en_US')" class="unSelec" id="en_USsel">English</a>
+        <form id="changelang" action="#" method="post">
+            <input type="hidden" value="" id="lang" name="lang">
+            <input type="hidden" value="" id="currentURL" name="currentURL">
+        <input type="hidden" name="CSRFHW" value="8f9d5d5330ea3f57e4a90484787de2d2"></form>
+        </div>
+        <div class="separador">|</div>
+        <div class="del_user"> <a onclick="sendUserInfoForm();" href="#">Información de usuario</a></div>
+    </div>
+	
+	<div class="div-welcome">
+        <div class="div-welcome-msg">
+			<span style="margin: 29px 2px 2px 10px;">Bienvenido</span>
+		</div>
+        <div style="float:left;Color:#000064;font-size:12pt;font-family:Unit-RegularAlternateItalic">
+           Teclee los datos para acceder
+        </div>
+    </div>
+
+	<section class="login" style="width:99%;margin:0px;">
+		<div class="div-ext-izq" style="border:none;">
+        </div>
+        <div class="div-center" style="height:auto;padding-left: 1%;">
+			<form class="form" action="<%= url_for(controller: 'sessions', action: 'nauta_hogar_login') %>" method="post" id="formulario">
+				<div class="content">
+					<div id="colum1" style="float:left;margin-right:8px">
+						<p class="ptex">Usuario:</p>
+						<div class="info">
+							<input class="input_m" name="email" id="email" type="text">
+						</div>
+						<p class="ptex">Contraseña:</p>
+						<div class="info">
+							<input class="input_m" name="password" id="password" type="password" autocomplete="off">
+						</div>
+						
+						
+					   		
+
+						<div class="div-button">
+							<div class="cur-up" style="float:left; background:#1414a0;margin-right:15px;">
+								<input type="submit" class="btn-login" value="Aceptar" style="cursor: pointer">
+							</div>
+							<div class="cur-up" style="float:left; background:#8c8c8c;margin-right:15px;">
+								<input class="btn-login" name="cancel" value="Cancelar" type="reset">
+							</div>
+							<div class="cur-up" style="float:left; background:#8c8c8c;margin-right:15px;">
+							 <input class="btn-login" name="ayuda" value="Ayuda" style="/*display:none;*/" onclick="help();" type="button">
+							</div>
+						</div>
+					</div>
+				</div>
+			<input type="hidden" name="CSRFHW" value="8f9d5d5330ea3f57e4a90484787de2d2"></form>
+		</div>
+		<div class="div-ext-der">
+        </div>
+    </section>
+	<hr class="line login">
+
+    
+    <div class="login ">
+        <div align="center" class="links">
+            <a href="#" onclick="termsofuse()">Condiciones de uso</a><span> | </span>
+            <a onclick="sendUserInfoForm();" href="#">Información de usuario</a> <span> | </span>
+			<a href="https://www.portal.nauta.cu/user/login" target="_blank">Portal de Usuario</a>
+        </div>
+    </div>
+    <hr class="line">
+    
+    <div class="login">
+        <div class="footer" align="center">
+			2015 Empresa de Telecomunicaciones de Cuba S.A (ETECSA).Todos los derechos reservados<br>
+            <div align="center" class="etecsa">www.etecsa.cu</div>
+        </div>
+    </div>
+	<div class="login">
+		<div class="div-ext-izq">
+			</div>        
+			<div class="div-center">
+			<div id="banner_promos" style="margin-top:20px;">
+				<ul style="text-align:center;list-style-type: none;margin: 0;padding: 0;">
+                    <%= image_tag 'nauta_hogar/CUBADEBATE.jpg', id: 'promo', style: 'display:inline;margin-right:5px;' %>
+                    <%= image_tag 'nauta_hogar/CUBAEDUCA.jpg', id: 'promo', style: 'display:inline;margin-right:5px;' %>
+                    <%= image_tag 'nauta_hogar/CUBARTE.jpg', id: 'promo', style: 'display:inline;margin-right:5px;' %>
+                    <%= image_tag 'nauta_hogar/CUBASI.jpg', id: 'promo', style: 'display:inline;margin-right:5px;' %>
+                    <%= image_tag 'nauta_hogar/ECURED.jpg', id: 'promo', style: 'display:inline;margin-right:5px;' %>
+                    <%= image_tag 'nauta_hogar/OFERTAS.jpg', id: 'promo', style: 'display:inline;margin-right:5px;' %>
+                    <%= image_tag 'nauta_hogar/PAPELETA.jpg', id: 'promo', style: 'display:inline;margin-right:5px;' %>
+				</ul>	
+			</div>
+		</div>
+		<div class="div-ext-der">
+		</div>
+	</div>
+</body>
+</html>

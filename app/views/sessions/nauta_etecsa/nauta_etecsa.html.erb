@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE HTML>
 <head>
 		<title>Bienvenido</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -10,23 +10,23 @@
 		<meta http-equiv="description" content=" ">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<% content_for :stylesheet do %>
-			<%= stylesheet_link_tag 'page_nauta' %>
+			<%= stylesheet_link_tag 'nauta_etecsa/page_nauta' %>
 		<% end %>
 		<% content_for :javascript do %>
-			<%= javascript_include_tag 'page_basic' %>
+			<%= javascript_include_tag 'incorrect3' %>
 		<% end %>
 </head>
 
 <body>
 	<div id="header">
                 <div style="width: 25%;height: 100px;float: left;"></div>
-		<%= image_tag 'wifietecsa/nauta_wifi.jpg', id: 'logo_nauta', width: '50%', height: '100' %>
-		<%= image_tag 'wifietecsa/etecsa.jpg', id: 'logo_etecsa' %>
+		<%= image_tag 'nauta_etecsa/nauta_wifi.jpg', id: 'logo_nauta', width: '50%', height: '100' %>
+		<%= image_tag 'nauta_etecsa/etecsa.jpg', id: 'logo_etecsa' %>
 	</div>
 	<div id="contenedor">
 <header>
 	
-	<%= image_tag 'wifietecsa/contenedor_bg.jpg', id: 'bg' %>
+	<%= image_tag 'nauta_etecsa/contenedor_bg.jpg', id: 'bg' %>
 
 	<ul id="menu_lang" class="clearfix">
 		<li class="sel"id="es_ESsel"><a href="#" onclick="javascript:switchLang('es_ES')">Español</a></li>
@@ -53,7 +53,7 @@
 
 
 
-						<form class="form" method="post" id="formulario" action="<%= url_for(controller: 'sessions', action: 'nauta_login') %>">
+						<form class="form" method="post" id="formulario" action="<%= url_for(controller: 'sessions', action: 'nauta_etecsa_login') %>">
 						<%= csrf_meta_tags %>
 						<label for="nombre">Usuario:</label>
 						<input name="email" id="email" maxlength="253" class="input_text cred" type="text">
@@ -81,13 +81,13 @@
 
 <div id="banner_promos" style="margin-top:40px;">
 		<ul style="text-align:center;list-style-type: none;margin: 0;padding: 0;">
-			<li style="display:inline;margin-right:20px;"><%= image_tag 'wifietecsa/CUBADEBATE.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
-			<li style="display:inline;margin-right:20px;"><%= image_tag 'wifietecsa/CUBAEDUCA.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
-			<li style="display:inline;margin-right:20px;"><%= image_tag 'wifietecsa/CUBARTE.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
-			<li style="display:inline;margin-right:20px;"><%= image_tag 'wifietecsa/CUBASI.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
-			<li style="display:inline;margin-right:20px;"><%= image_tag 'wifietecsa/ECURED.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
-			<li style="display:inline;margin-right:20px;"><%= image_tag 'wifietecsa/OFERTAS.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
-			<li style="display:inline;margin-right:20px;"><%= image_tag 'wifietecsa/PAPELETA.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'nauta_etecsa/CUBADEBATE.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'nauta_etecsa/CUBAEDUCA.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'nauta_etecsa/CUBARTE.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'nauta_etecsa/CUBASI.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'nauta_etecsa/ECURED.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'nauta_etecsa/OFERTAS.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
+			<li style="display:inline;margin-right:20px;"><%= image_tag 'nauta_etecsa/PAPELETA.jpg', style: 'border-radius: 6px;height: 68px;', id: 'promo' %></li>
 		</ul>	
 	</div>
 

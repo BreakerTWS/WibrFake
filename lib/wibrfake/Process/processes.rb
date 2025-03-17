@@ -1,5 +1,15 @@
 module WibrFake
     class Processes
+        def initialize
+            processes = ['wibrfake_hostapd', 'wibrfake_dns', 'wibrfake_dhcp']
+            processes.each{|process|
+                status_proc(process).each{|pid|
+                    if(!pid.empty?)
+                        set(process.split('_')[1], pid)
+                    end
+                }
+            }
+        end
         def self.status(process, verb=0)
             pids = []
             File.foreach(File.join(File.dirname(__FILE__), 'pids.log')){|file|

@@ -18,7 +18,6 @@ module WibrFake
                 File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', id, 'config.yml'), 'w'){|file|
                     file.write(config_session.to_yaml)
                 }
-                puts "\033[38;5;46m[\e[1;37m+\033[38;5;46m]\e[1;37m New session created: #{@id}"
             rescue LoadError => e
                 puts e.message
             rescue Errno::EINVAL

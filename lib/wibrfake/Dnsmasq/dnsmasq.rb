@@ -27,7 +27,7 @@ module WibrFake
             @lease_time = 3600
             @id = id
             @dir_clients = File.join(File.dirname(__FILE__), '..', 'Tmp', id, 'clients')
-            Dir.mkdir(@dir_clients) unless(Dir.exists?(@dir_clients))
+            Dir.mkdir(@dir_clients) unless(Dir.exist?(@dir_clients))
         end
     end
 end

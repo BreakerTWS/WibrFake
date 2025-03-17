@@ -26,14 +26,17 @@ module WibrFake
 
         #Run dnsmasq with PTY spawn
         pid_hostapd = fork {
+          $0 = 'wibrfake_hostapd'
           hostapd
         }
 
         pid_dns_server = fork {
+          $0 = 'wibrfake_dns'
           server.dns
         }
 
         pid_dhcp_server = fork {
+          $0 = 'wibrfake_dhcp'
           server.dhcp
         }
 
@@ -75,7 +78,7 @@ module WibrFake
                       File.open(File.join(File.dirname(__FILE__), '..', 'Tmp', @id, 'clients', 'clients_disconnected.log'), 'a'){|log|
                             log.write "#{client.split(', ')[0]}, #{client.split(', ')[1]}, #{client.split(', ')[2].chomp}\n"
                       }
-                      warn "\n\r\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m" + ' ' + "Dispositive: \033[38;5;51m#{client.split(', ')[0]}\e[1;37m | " + "IP: \033[38;5;118m#{client.split(', ')[1]}\e[1;37m | " + "MAC: \033[38;5;214m#{client.split(', ')[2].chomp}\e[1;37m" + ' ' + "disconnected"
+                      warn "\n\n\r\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m" + ' ' + "Dispositive: \033[38;5;51m#{client.split(', ')[0]}\e[1;37m | " + "IP: \033[38;5;118m#{client.split(', ')[1]}\e[1;37m | " + "MAC: \033[38;5;214m#{client.split(', ')[2].chomp}\e[1;37m" + ' ' + "disconnected"
                       puts "\n"
                       print "\r\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{@iface} \e[0m\033[38;5;236m\e[0m "
                       lines.reject! { |linefile| linefile.include?(target) }

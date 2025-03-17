@@ -9,13 +9,13 @@ module WibrFake
             #    configAP.macaddr_acl = 1
             #end
             tmp_id = File.join(File.dirname(__FILE__), '..', 'Tmp', id)
-            unless(Dir.exists?(File.join(tmp_id, 'hostapd')))
+            unless(Dir.exist?(File.join(tmp_id, 'hostapd')))
                 Dir.mkdir(File.join(tmp_id, 'hostapd'))
             end
-            unless(Dir.exists?(File.join(tmp_id, 'wkdump')))
+            unless(Dir.exist?(File.join(tmp_id, 'wkdump')))
                 Dir.mkdir(File.join(tmp_id, 'wkdump'))
             end
-            unless(Dir.exists?(File.join(tmp_id, 'credentials')))
+            unless(Dir.exist?(File.join(tmp_id, 'credentials')))
                 Dir.mkdir(File.join(tmp_id, 'credentials'))
             end
             File.open(File.join(tmp_id, 'hostapd', 'hostapd.conf'), 'w'){|file|

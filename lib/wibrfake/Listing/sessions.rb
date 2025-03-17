@@ -4,7 +4,7 @@ module WibrFake
             sessions = Array.new
             show_sessions = Array.new
             Dir.each_child(File.join(File.dirname(__FILE__), '..', 'Tmp')){|directory|
-                if(Dir.exists?(File.join(File.dirname(__FILE__), '..', 'Tmp', directory)))
+                if(Dir.exist?(File.join(File.dirname(__FILE__), '..', 'Tmp', directory)))
                     sessions << directory
                 end
             }
@@ -33,7 +33,7 @@ module WibrFake
         def self.sessions_list_return
             sessions = Array.new
             Dir.each_child(File.join(File.dirname(__FILE__), '..', 'Tmp')){|directory|
-                if(Dir.exists?(File.join(File.dirname(__FILE__), '..', 'Tmp', directory)))
+                if(Dir.exist?(File.join(File.dirname(__FILE__), '..', 'Tmp', directory)))
                     sessions << directory
                 end
             }

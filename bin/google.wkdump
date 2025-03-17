@@ -1,0 +1,3 @@
+set login google
+web_server on
+web_server status

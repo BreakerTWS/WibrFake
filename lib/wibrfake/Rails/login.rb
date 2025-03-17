@@ -1,7 +1,10 @@
 module WibrFake
     class RailsLogin
+        def self.logins
+            return ['basic', 'nauta_etecsa', 'nauta_hogar', 'facebook', 'instagram', 'google']
+        end
         def self.validate?(login)
-            ["basic", "wifietecsa"].each{|log_in|
+            logins.each{|log_in|
                 if(log_in==login)
                     return true
                 end
@@ -10,8 +13,8 @@ module WibrFake
         end
         
         def self.show(verb = 0)
-            return ["basic", "wifietecsa"] if verb==0
-            puts ["basic", "wifietecsa"]
+            return logins if verb==0
+            puts logins
         end
     end
 end

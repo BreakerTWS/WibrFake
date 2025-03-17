@@ -19,8 +19,10 @@ module WibrFake
             ENV['CREDENTIAL_ROUTE'] = credential_route
         end
         def start
+            status = true
             begin
                 server_pid = fork {
+                    begin
                     route_root, route_login = WibrFake::Rails.routes(login: @login, route: @route)
                     ::Rails.application.routes.clear!
                     
@@ -38,9 +40,14 @@ module WibrFake
                     Puma::Server.new(::Rails.application).tap {|server|
                         server.add_tcp_listener @host, @port
                     }.run
+                    WibrFake::Processes.set("web_server", Process.pid)
                     sleep
+                    rescue Errno::EADDRINUSE
+                        status = false
+                        puts "Ya hay un servicio web como portal cautivo corriendo en el puerto #{@port}"
+                    end 
                 }
-                WibrFake::Processes.set("web_server", server_pid)
+                
             rescue => e
                 puts e.message
             end

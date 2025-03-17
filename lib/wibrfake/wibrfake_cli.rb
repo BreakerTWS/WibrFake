@@ -606,6 +606,7 @@ module WibrFake
                                         if(input.split.fetch(2))
                                             WibrFake::Session.new(id: input.split.fetch(2))
                                             WibrFake::Config.new(WibrFake::Config.apfake(OpenStruct.new), options.iface_init, input.split.fetch(2))
+                                            puts "\033[38;5;46m[\e[1;37m+\033[38;5;46m]\e[1;37m New session created: #{input.split.fetch(2)}"
                                         end
                                     rescue IndexError
                                         warn "\033[38;5;196m[\e[1;37m✘\033[38;5;196m]\e[1;37m You have not defined the name for the new session"

