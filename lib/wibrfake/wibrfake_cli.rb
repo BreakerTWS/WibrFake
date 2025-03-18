@@ -527,8 +527,6 @@ module WibrFake
                                     WibrFake::Pkill.kill_silence("dns")
                                     WibrFake::Pkill.kill_silence("dhcp")
                                     WibrFake::Pkill.kill_silence("hostapd")
-                                when 'status'
-                                    
                                 when 'show'
                                     WibrFake::Listing.apfake_show(@configAP, options.iface)
                                 else
