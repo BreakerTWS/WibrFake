@@ -43,8 +43,9 @@ module WibrFake
                     WibrFake::Processes.set("web_server", Process.pid)
                     sleep
                     rescue Errno::EADDRINUSE
-                        status = false
-                        puts "Ya hay un servicio web como portal cautivo corriendo en el puerto #{@port}"
+                        warn "\n\r\e[1;33m[\e[1;37m!\e[1;33m]\e[1;37m There is already a captive portal web service running on port #{@port}. Run 'pkill web_server' to terminate the web server or set a new port with 'set port [PORT]'."
+                        puts "\n"
+                        print "\r\033[38;5;236m\e[0m\033[48;5;236m \033[38;5;196mwibrfake  #{@iface} \e[0m\033[38;5;236m\e[0m "
                     end 
                 }
                 

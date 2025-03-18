@@ -21,24 +21,30 @@ module WibrFake
         #  WibrFake::Processes.set("wpa_supplicant", pid)
         #  WibrFake::Pkill.kill_silence("wpa_supplicant")
         #}
-        #Initiating IPRouting
-        WibrFake::IPRouting.new(ipaddr, iface).set
 
         #Run dnsmasq with PTY spawn
-        pid_hostapd = fork {
-          $0 = 'wibrfake_hostapd'
-          hostapd
-        }
+        begin
+          raise Errno::EADDRINUSE if WibrFake::Processes.status_all.join.include?('dns') or WibrFake::Processes.status_all.join.include?('dhcp') or WibrFake::Processes.status_all.join.include?('hostapd')
+          
+          #Initiating IPRouting
+          WibrFake::IPRouting.new(ipaddr, iface).set
 
-        pid_dns_server = fork {
-          $0 = 'wibrfake_dns'
-          server.dns
-        }
-
-        pid_dhcp_server = fork {
-          $0 = 'wibrfake_dhcp'
-          server.dhcp
-        }
+          pid_hostapd = fork {
+            $0 = 'wibrfake_hostapd'
+            hostapd
+          }
+          pid_dns_server = fork {
+            $0 = 'wibrfake_dns'
+            server.dns
+          }
+          pid_dhcp_server = fork {
+            $0 = 'wibrfake_dhcp'
+            server.dhcp
+          }
+        rescue Errno::EADDRINUSE
+          warn "An access point is running. View active processes with 'show process' and terminate the involved ones (dns, dhcp, hostapd) using 'pkill [PROCESS]'."
+          return 0
+        end
 
         #Set PID for process
         WibrFake::Processes.set("dns", String(pid_dns_server.to_i))
