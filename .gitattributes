@@ -1,0 +1,10 @@
+# Clasificar archivos ERB como Ruby (vistas de Rails)
+*.html.erb linguist-language=Ruby
+*.erb linguist-language=Ruby
+
+# Excluir directorios con archivos estáticos (opcional)
+/public/* linguist-vendored
+/assets/* linguist-vendored
+
+# Si tienes otros archivos HTML no relevantes, márcalos como documentación
+*.html linguist-documentation
