@@ -54,8 +54,7 @@ module WibrFake
             apfake_commands = {
                 "  show" => "View AP configuration",
                 "  on" => "Enable rogue AP mode",
-                "  off" => "Disable rogue AP mode",
-                "  status" => "Check AP status"
+                "  off" => "Disable rogue AP mode"
             }
             
             clients_commands = {
