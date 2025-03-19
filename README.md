@@ -89,7 +89,7 @@ ruby-full \
 git clone https://github.com/BreakerTWS/WibrFake.git
 cd WibrFake
 sudo bundle install
-sudo ruby wibrfake --help
+sudo ruby bin/wibrfake --help
 ```
 
 ### RubyGem (Recommended)
