@@ -7,7 +7,7 @@ require 'socket'
 require 'open3'
 require 'fileutils'
 
-require_relative "#{File.join(File.dirname(__FILE__), '..', 'lib', 'wibrfake', 'run')}"
+require_relative '../lib/wibrfake/run'
 options = OpenStruct.new
 options.file_wkdump = nil
 
